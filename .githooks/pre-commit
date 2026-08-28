@@ -1,0 +1,30 @@
+#!/bin/sh
+# Trava de Git Flow: impede commit direto em main/develop e em branches fora do padrão.
+# Ativado por:  git config core.hooksPath .githooks
+# Emergência:   git commit --no-verify
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+if [ -z "$branch" ]; then
+	exit 0  # detached HEAD (rebase, bisect...) — não interfere
+fi
+
+case "$branch" in
+	main|master|develop)
+		echo "BLOQUEADO: commit direto em '$branch' não é permitido (Git Flow)."
+		echo "  Crie uma feature:  git checkout -b feature/<nome>"
+		echo "  Ver regras:        SPECS-git.md"
+		echo "  Emergência:        git commit --no-verify"
+		exit 1
+		;;
+	feature/*|release/*|hotfix/*)
+		exit 0
+		;;
+	*)
+		echo "BLOQUEADO: a branch '$branch' não segue o padrão do Git Flow."
+		echo "  Use feature/<nome>, release/<versão> ou hotfix/<nome>."
+		echo "  Ver regras:  SPECS-git.md"
+		echo "  Emergência:  git commit --no-verify"
+		exit 1
+		;;
+esac
