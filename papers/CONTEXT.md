@@ -34,9 +34,12 @@ o token `olp_...` (usuário: `git`).
 
 ## Compilar o PDF localmente (MiKTeX)
 
+O projeto que veio do Overleaf é o **template Springer LNCS**; o arquivo principal
+é **`samplepaper.tex`** (renomeie quando o artigo tomar forma, e ajuste aqui).
+
 ```powershell
 cd C:\Users\Usuário\Desktop\codigos\AAA\IA\workspace\papers\artigo
-latexmk -pdf -halt-on-error -interaction=nonstopmode main.tex
+latexmk -pdf -halt-on-error -interaction=nonstopmode samplepaper.tex
 ```
 
 Para classes que exigem fontes do sistema (`fontspec`), troque `-pdf` por `-xelatex`.
@@ -45,13 +48,12 @@ Limpar e recompilar do zero:
 
 ```powershell
 latexmk -C
-latexmk -pdf -halt-on-error -interaction=nonstopmode main.tex
+latexmk -pdf -halt-on-error -interaction=nonstopmode samplepaper.tex
 ```
 
-Na primeira compilação o MiKTeX baixa os pacotes que faltam sozinho — pode aparecer
-uma janelinha pedindo confirmação; marque "instalar" e "não perguntar de novo".
-
-O nome do arquivo principal pode não ser `main.tex` — confira o que veio do Overleaf.
+O MiKTeX já está configurado para **baixar pacotes que faltam automaticamente**
+(`initexmf --set-config-value "[MPM]AutoInstall=1"`), então a primeira compilação
+pode demorar um pouco mas não trava pedindo confirmação.
 
 ## Escrita (herdado do workspace do professor)
 
