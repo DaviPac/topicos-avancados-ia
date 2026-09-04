@@ -11,6 +11,7 @@ Ver `README.md` para o que é e como rodar.
 - `src/data.py` — carga do CSV, padronização, split treino/teste.
 - `src/visualize.py` — desenho do grafo e animação dos pesos (networkx + matplotlib).
 - `src/train.py` — laço de treino / CLI / ponto de entrada (`python -m src.train`).
+- `app_streamlit.py` — visualizador interativo web (equivalente ao harness PyQt do professor), reusa `src/`.
 - `data/heart.csv` — dataset (ver origem no README).
 - `tests/test_mlp.py` — gradient checking do backward.
 - `outputs/` — gerado pelo treino (`metrics.json`, `graph_final.png`, `training.gif`); não versionar reruns grandes além do necessário para a entrega.

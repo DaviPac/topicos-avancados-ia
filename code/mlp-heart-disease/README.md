@@ -23,6 +23,24 @@ Isso treina a rede (80% treino / 20% teste, split fixo por seed) e escreve em
 - `training.gif` — animação do grafo mostrando os pesos sendo atualizados ao
   longo do treinamento.
 
+## Visualizador interativo (Streamlit)
+
+O harness de demonstração do professor (`lsfcin/mlp`, exemplo citado no slide da
+prática) é um app desktop em **PyQt6** (`QGraphicsScene`/`QGraphicsView` para o
+grafo + widgets Qt para o painel lateral) — por isso a janela tem barra de
+título nativa. Aqui o equivalente é um site **Streamlit**
+(`app_streamlit.py`), rodando em cima dos mesmos `src/graph.py`/`src/mlp.py`
+(nenhuma lógica duplicada): painel lateral para arquitetura/ativação/learning
+rate, carregar o dataset, `Train Step`/`Train Época`/`Fast Forward`, grafo
+desenhado com `src/visualize.py` e gráfico de loss ao vivo.
+
+```bash
+streamlit run app_streamlit.py
+```
+
+`outputs/streamlit_app.png` é um print real do app rodando (dataset
+carregado, 8 épocas treinadas, fast-forward no teste).
+
 ## Estrutura do grafo
 
 Cada neurônio é um nó do `networkx.DiGraph` (`src/graph.py`), cada conexão é
