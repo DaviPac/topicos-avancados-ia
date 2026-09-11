@@ -24,6 +24,39 @@ obtidos e as variações de hiperparâmetros testadas.
 
 ## Método
 
+### Etapas, bibliotecas e uso de IA
+
+O projeto foi construído em etapas: (1) leitura da especificação da prática
+(estrutura de grafo, feed forward/back propagation manuais, dataset e split
+80/20); (2) implementação dos módulos de base — grafo, ativações,
+forward/backward; (3) validação da implementação por *gradient checking*;
+(4) obtenção e preparo do dataset *Heart Disease*; (5) busca manual de
+hiperparâmetros (arquitetura, ativação, *learning rate*, número de épocas —
+detalhada na seção de Resultados); (6) construção do harness interativo em
+Streamlit; (7) geração dos diagramas e redação deste relatório.
+
+As bibliotecas usadas foram deliberadamente mínimas: `networkx` para
+representar o grafo da rede, `matplotlib` para desenhá-lo (estático e
+animado) e para os diagramas deste relatório, `streamlit` para o harness
+web, e `unittest` (biblioteca padrão) para os testes de *gradient
+checking*. O núcleo da MLP (`graph.py`, `activations.py`, `mlp.py`) não usa
+NumPy, PyTorch, TensorFlow nem *pandas* — decisão deliberada, já que o
+objetivo da prática é implementar feed forward e back propagation de forma
+explícita, nó a nó e aresta a aresta, e não escondê-los por trás de
+operações vetoriais ou de *autograd*.
+
+O desenvolvimento foi assistido pelo **Claude Code** (Anthropic), um
+assistente de codificação por linha de comando. A IA foi usada para: gerar
+a implementação inicial de cada módulo a partir da especificação da
+prática, escrever os testes de *gradient checking*, construir o harness em
+Streamlit, gerar os diagramas de arquitetura (Figuras 1 e 3) e redigir o
+rascunho deste relatório a partir dos resultados obtidos. As decisões de
+design (representar a rede como grafo explícito, dividir o código em
+módulos pequenos), a escolha e comparação dos hiperparâmetros (seção de
+Variações testadas) e a validação dos resultados foram conduzidas e
+revisadas pelo autor a cada etapa — a IA funcionou como ferramenta de
+implementação e documentação, não como autora das decisões experimentais.
+
 ### Organização da solução
 
 O projeto está organizado em módulos pequenos e independentes, cada um com
