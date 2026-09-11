@@ -60,7 +60,24 @@ então o gradiente de cada aresta (`delta_destino * valor_origem`).
 | architecture | 13 \| 8 \| 5 \| 1 |
 | pre-processing | standardize |
 
-Ver `outputs/metrics.json` para o histórico completo.
+Ver `outputs/metrics.json` para o histórico completo e `outputs/metrics_extra.json`
+para precisão/revocação/F1/matriz de confusão no teste.
+
+## Material para entrega (slides + relatório Overleaf)
+
+Gerado por `/tmp/.../gen_report_assets.py`, `gen_diagram.py` e
+`gen_terminal_shots.py` (scripts de apoio, não fazem parte do pacote — os
+resultados já estão em `outputs/`):
+
+- `outputs/architecture_before.png` / `architecture_after.png` — grafo antes
+  e depois do treinamento (pesos iniciais vs. treinados).
+- `outputs/software_architecture.png` — diagrama de módulos do projeto
+  (caixas e setas).
+- `outputs/estrutura_pastas.png` — print da árvore de arquivos do projeto.
+- `outputs/git_gitflow.png` — print do histórico git mostrando a feature
+  branch e o Pull Request pra `develop`.
+- `relatorio_overleaf.tex` — rascunho das seções (Introdução, Método,
+  Resultados e Discussão) do relatório técnico, pra colar no Overleaf.
 
 ## Testes
 
