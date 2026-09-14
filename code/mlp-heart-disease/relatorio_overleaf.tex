@@ -1,0 +1,245 @@
+% ============================================================
+% Cole cada \section abaixo no lugar certo do samplepaper.tex.
+% Antes de \begin{document}, garanta que o preamble tem:
+%   \usepackage{graphicx}
+%   \usepackage{booktabs}
+% Suba as 5 imagens pro Overleaf (aba de arquivos, "Upload"):
+%   streamlit_app.png, software_architecture.png,
+%   architecture_before.png, architecture_after.png,
+%   (estrutura_pastas.png e git_gitflow.png vão no OUTRO slide, não aqui)
+% ============================================================
+
+\section{Introdução}
+
+Este relatório descreve a implementação de uma rede neural multicamadas
+(MLP -- \textit{Multi-Layer Perceptron}) construída do zero, representada
+explicitamente como um grafo de neurônios e conexões, sem uso de bibliotecas
+de \textit{autograd} (PyTorch, TensorFlow). A motivação da prática é
+consolidar, na prática, os mecanismos de \textit{feed forward} e
+\textit{back propagation} que sustentam o treinamento de redes neurais,
+tornando explícitos os passos que normalmente ficam ocultos por trás de
+chamadas de alto nível em frameworks de deep learning.
+
+A especificação da prática pedia: (i) codificar uma MLP a partir da
+estrutura de um grafo; (ii) implementar manualmente feed forward e back
+propagation; (iii) treinar e avaliar a rede na base \textit{Heart Disease}
+(divisão 80\% treino / 20\% teste); e (iv) demonstrar/visualizar o processo
+de treinamento e inferência, com o grafo e os pesos sendo atualizados.
+Este relatório documenta como cada um desses pontos foi resolvido, os
+resultados obtidos e as variações de hiperparâmetros testadas.
+
+\section{Método}
+
+\subsection{Etapas, bibliotecas e uso de IA}
+
+O projeto foi construído em etapas: (1) leitura da especificação da
+prática (estrutura de grafo, feed forward/back propagation manuais,
+dataset e split 80/20); (2) implementação dos módulos de base -- grafo,
+ativações, forward/backward; (3) validação da implementação por
+\textit{gradient checking}; (4) obtenção e preparo do dataset
+\textit{Heart Disease}; (5) busca manual de hiperparâmetros (arquitetura,
+ativação, \textit{learning rate}, número de épocas -- detalhada na seção
+de Resultados); (6) construção do harness interativo em Streamlit;
+(7) geração dos diagramas e redação deste relatório.
+
+As bibliotecas usadas foram deliberadamente mínimas: \texttt{networkx}
+para representar o grafo da rede, \texttt{matplotlib} para desenhá-lo
+(estático e animado) e para os diagramas deste relatório,
+\texttt{streamlit} para o harness web, e \texttt{unittest} (biblioteca
+padrão) para os testes de \textit{gradient checking}. O núcleo da MLP
+(\texttt{graph.py}, \texttt{activations.py}, \texttt{mlp.py}) não usa
+NumPy, PyTorch, TensorFlow nem \textit{pandas} -- decisão deliberada, já
+que o objetivo da prática é implementar feed forward e back propagation
+de forma explícita, nó a nó e aresta a aresta, sem escondê-los por trás
+de operações vetoriais ou de \textit{autograd}.
+
+O desenvolvimento foi assistido pelo \textbf{Claude Code} (Anthropic), um
+assistente de codificação por linha de comando. A IA foi usada para:
+gerar a implementação inicial de cada módulo a partir da especificação da
+prática, escrever os testes de \textit{gradient checking}, construir o
+harness em Streamlit, gerar os diagramas de arquitetura (Figuras~\ref{fig:arquitetura}
+e~\ref{fig:antes_depois}) e redigir o rascunho deste relatório a partir
+dos resultados obtidos. As decisões de design (representar a rede como
+grafo explícito, dividir o código em módulos pequenos), a escolha e
+comparação dos hiperparâmetros (seção de Variações testadas) e a
+validação dos resultados foram conduzidas e revisadas pelo autor a cada
+etapa -- a IA funcionou como ferramenta de implementação e documentação,
+não como autora das decisões experimentais.
+
+\subsection{Organização da solução}
+
+O projeto está organizado em módulos pequenos e independentes, cada um com
+uma responsabilidade única: carregamento e pré-processamento dos dados,
+construção do grafo, execução de feed forward/back propagation sobre esse
+grafo, visualização, e dois pontos de entrada (um script de treino via
+linha de comando e um harness interativo). A Figura~\ref{fig:arquitetura}
+mostra os módulos e como eles se conectam.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{software_architecture.png}
+    \caption{Módulos do projeto e suas dependências. Os módulos de base
+    (\texttt{data.py}, \texttt{graph.py}, \texttt{activations.py}) alimentam
+    o motor de treino (\texttt{mlp.py}) e a visualização
+    (\texttt{visualize.py}), que por sua vez são usados pelos dois pontos de
+    entrada: o script de treino em lote (\texttt{train.py}) e o harness
+    interativo (\texttt{app\_streamlit.py}).}
+    \label{fig:arquitetura}
+\end{figure}
+
+A rede é representada como um \texttt{DiGraph} (grafo direcionado) da
+biblioteca \texttt{networkx}: cada neurônio é um nó, com atributos de soma
+ponderada (\textit{z}), ativação (\textit{value}), erro retropropagado
+(\textit{delta}) e \textit{bias}; cada conexão entre dois neurônios de
+camadas adjacentes é uma aresta, com um peso. O \textit{feed forward}
+percorre os nós camada a camada, somando, para cada nó, o valor de cada nó
+de origem multiplicado pelo peso da aresta correspondente, e aplicando a
+função de ativação. O \textit{back propagation} percorre o grafo no sentido
+inverso: o erro do neurônio de saída (diferença entre a previsão e o rótulo
+real) é distribuído para trás, aresta por aresta, proporcionalmente ao peso
+de cada conexão e à derivada da função de ativação em cada nó -- produzindo
+o gradiente de cada peso e de cada \textit{bias}, usados para atualizar os
+parâmetros por gradiente descendente.
+
+A corretude da implementação do \textit{back propagation} foi verificada
+por \textit{gradient checking}: o gradiente analítico calculado pelo
+backward é comparado ao gradiente numérico (diferenças finitas), obtido
+perturbando cada peso em $\pm\epsilon$ e observando a variação da perda.
+Os dois métodos convergem até a quarta casa decimal, para as ativações
+ReLU e tanh testadas.
+
+\subsection{Harness de visualização}
+
+O harness de referência da disciplina (\texttt{lsfcin/mlp}) é um aplicativo
+desktop em PyQt6. Para este projeto, foi construído um harness equivalente
+como aplicação web, usando \textit{Streamlit}, reaproveitando exatamente os
+mesmos módulos de grafo e treino (nenhuma lógica foi duplicada). O harness
+permite: carregar o dataset, ajustar arquitetura/ativação/taxa de
+aprendizagem, executar um passo de treino ou uma época completa, rodar a
+inferência no conjunto de teste, e visualizar o grafo (nós e arestas
+coloridas por sinal e espessura por magnitude do peso) e a curva de perda
+em tempo real. A Figura~\ref{fig:harness} mostra o harness em execução,
+após carregar o dataset e treinar algumas épocas.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{streamlit_app.png}
+    \caption{Harness interativo (Streamlit) em execução: painel de
+    controle à esquerda, grafo da rede com os pesos ao centro, e curva de
+    perda (loss) por época à direita.}
+    \label{fig:harness}
+\end{figure}
+
+\subsection{Dados}
+
+A base utilizada foi a \textit{Heart Disease} (13 atributos clínicos --
+idade, sexo, tipo de dor no peito, pressão em repouso, colesterol, entre
+outros -- e um rótulo binário indicando presença de doença cardíaca), com
+303 amostras. Os dados foram divididos em 80\% treino (242 amostras) e 20\%
+teste (60 amostras), com separação fixa por semente aleatória. As features
+foram padronizadas (\textit{z-score}: subtração da média e divisão pelo
+desvio padrão), usando estatísticas calculadas apenas no conjunto de
+treino, para evitar vazamento de informação do teste.
+
+\section{Resultados e Discussão}
+
+\subsection{Configuração final e métricas}
+
+A configuração que obteve o melhor resultado no conjunto de teste foi:
+arquitetura 13$\,|\,$8$\,|\,$5$\,|\,$1 (13 entradas, duas camadas escondidas
+de 8 e 5 neurônios, 1 saída), ativação ReLU nas camadas escondidas e
+sigmoid na saída, taxa de aprendizagem 0.005, treinada por 60 épocas com
+gradiente descendente estocástico (atualização a cada amostra). A
+Tabela~\ref{tab:metricas} reporta as métricas no conjunto de teste.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Métricas no conjunto de teste (60 amostras).}
+    \label{tab:metricas}
+    \begin{tabular}{lc}
+        \toprule
+        Métrica & Valor \\
+        \midrule
+        Acurácia  & 0.833 \\
+        Precisão  & 0.757 \\
+        Revocação (\textit{recall}) & 0.966 \\
+        F1-score  & 0.848 \\
+        \midrule
+        Verdadeiros positivos & 28 \\
+        Falsos positivos      & 9  \\
+        Verdadeiros negativos & 22 \\
+        Falsos negativos      & 1  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+A revocação alta (0.966) indica que o modelo raramente deixa passar um
+paciente com doença cardíaca (apenas 1 falso negativo em 29 casos
+positivos) -- um comportamento desejável nesse domínio, em que o custo de
+um falso negativo (não detectar a doença) tende a ser maior que o de um
+falso positivo. Em contrapartida, a precisão mais baixa (0.757) mostra que
+o modelo superestima casos positivos com alguma frequência (9 falsos
+positivos).
+
+\subsection{Arquitetura antes e depois do treinamento}
+
+A Figura~\ref{fig:antes_depois} mostra o grafo da rede em dois momentos: os
+pesos logo após a inicialização (Xavier/Glorot) e os pesos após as 60
+épocas de treinamento. É possível notar que a distribuição de pesos muda
+de forma visível, sobretudo nas conexões entre a última camada escondida e
+o neurônio de saída, que passam a ter magnitudes bem mais desiguais entre
+si -- indício de que a rede aprendeu a dar peso diferente a diferentes
+combinações de atributos.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.47\textwidth]{architecture_before.png}\hfill
+    \includegraphics[width=0.47\textwidth]{architecture_after.png}
+    \caption{Grafo da rede antes do treinamento (pesos inicializados por
+    Xavier/Glorot, à esquerda) e depois de 60 épocas de treinamento
+    (à direita). Azul indica peso positivo, vermelho indica peso negativo;
+    a espessura da aresta é proporcional à magnitude do peso.}
+    \label{fig:antes_depois}
+\end{figure}
+
+\subsection{Variações testadas}
+
+Diversas combinações de arquitetura, ativação, taxa de aprendizagem e
+número de épocas foram testadas manualmente antes de se chegar à
+configuração final. A Tabela~\ref{tab:variacoes} resume os principais
+experimentos.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Variações de hiperparâmetros testadas (acurácia em treino e teste).}
+    \label{tab:variacoes}
+    \begin{tabular}{lccccc}
+        \toprule
+        Arquitetura & Ativação & LR & Épocas & Acc. treino & Acc. teste \\
+        \midrule
+        13\,|\,8\,|\,5\,|\,1  & relu & 0.01  & 150 & 1.000 & 0.733 \\
+        13\,|\,8\,|\,5\,|\,1  & relu & 0.01  & 60  & 0.967 & 0.767 \\
+        13\,|\,8\,|\,5\,|\,1  & tanh & 0.01  & 40  & 0.942 & 0.800 \\
+        13\,|\,6\,|\,4\,|\,1  & relu & 0.01  & 50  & 0.938 & 0.683 \\
+        13\,|\,8\,|\,5\,|\,1  & relu & 0.005 & 80  & 0.951 & 0.817 \\
+        13\,|\,10\,|\,6\,|\,1 & relu & 0.005 & 80  & 0.955 & 0.700 \\
+        13\,|\,8\,|\,5\,|\,1  & relu & 0.005 & 100 & 0.971 & 0.783 \\
+        \textbf{13\,|\,8\,|\,5\,|\,1}  & \textbf{relu} & \textbf{0.005} & \textbf{60}  & \textbf{0.930} & \textbf{0.833} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+O padrão mais consistente observado foi \textbf{overfitting} em redes
+maiores ou treinadas por mais épocas: a primeira linha da
+Tabela~\ref{tab:variacoes} (150 épocas) atinge 100\% de acurácia no
+treino, mas cai para 73,3\% no teste -- a rede passou a memorizar os
+242 pacientes de treino em vez de aprender um padrão que generaliza para
+pacientes novos. O mesmo efeito, em menor grau, aparece ao aumentar a
+arquitetura (13\,|\,10\,|\,6\,|\,1): mais parâmetros, mais capacidade de
+memorização, pior generalização nesse dataset pequeno. A configuração
+final (8\,|\,5, 60 épocas, \textit{learning rate} 0.005) foi a que
+equilibrou melhor esse compromisso entre ajuste ao treino e generalização.
+A padronização das features (\textit{z-score}) também se mostrou
+necessária: sem ela, atributos de escala maior (por exemplo, colesterol,
+que varia de 126 a 564) dominam a soma ponderada e tornam o treinamento
+instável, independentemente da arquitetura escolhida.
