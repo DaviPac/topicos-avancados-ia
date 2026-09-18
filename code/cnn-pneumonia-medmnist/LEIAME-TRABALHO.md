@@ -83,7 +83,8 @@ com o comentário `MODIFICACAO (trabalho)`:
   Nenhuma outra linha do pipeline foi tocada.
 
 Arquivos **novos** (não alteram nada dos autores): este `LEIAME-TRABALHO.md`,
-`CONTEXT.md`, `requirements.txt` e `verificacao/contar_parametros.py`.
+`CONTEXT.md`, `requirements.txt`, `comparar.py`, `graficos_comparacao.py` e a pasta
+`verificacao/`.
 
 ## Como rodar
 
@@ -122,6 +123,34 @@ python train_and_eval_pytorch.py --data_flag pneumoniamnist --model_flag resnet1
     --num_epochs 0 --gpu_ids -1 --model_path output/pneumoniamnist/<data_hora>/best_model.pth
 ```
 
+### Comparação antes × depois (quantitativa e qualitativa)
+
+Com os dois checkpoints em mãos, um comando produz todo o material da comparação:
+
+```bash
+python comparar.py \
+    --antes  MedMNIST2D/output/pneumoniamnist/<data_hora>/best_model.pth \
+    --depois MedMNIST2D/output/pneumoniamnist/<data_hora>/best_model.pth
+```
+
+No terminal sai a tabela quantitativa (parâmetros, AUC e ACC pelo mesmo `Evaluator`
+oficial do artigo, e tempo de inferência por imagem). Em `comparacao/` saem três
+figuras para os slides:
+
+- `matriz_confusao.png` — as duas redes lado a lado, com contagem e percentual por
+  linha (mostra em qual das duas classes cada rede erra mais);
+- `curva_roc.png` — as duas curvas sobrepostas;
+- `discordancias.png` — os raios-X em que as redes discordam entre si, com o palpite
+  e a confiança de cada uma. É a figura que mais rende na apresentação, porque mostra
+  *onde* a mudança de arquitetura alterou o comportamento, não só o placar.
+
+As curvas de acurácia e perda por época ficam no TensorBoard, que o script dos autores
+já grava:
+
+```bash
+tensorboard --logdir MedMNIST2D/output/pneumoniamnist
+```
+
 E para mostrar o tamanho das duas redes lado a lado, sem treinar nada:
 
 ```bash
@@ -143,6 +172,7 @@ python verificacao/testar_redes.py
 | Parâmetros | 11.168.706 | **307.042** (36× menos) |
 | Tempo por época em CPU de 4 núcleos¹ | ~71 s | **~7,5 s** (9,4× mais rápido) |
 | Estimativa para as 100 épocas do artigo¹ | ~2 h | **~13 min** |
+| Inferência por imagem, em CPU¹ | 4,00 ms | **0,39 ms** (10× mais rápido) |
 
 ¹ Medido nesta sessão, com a avaliação dos três splits a cada época, que é o que o
 script dos autores faz. Na sua máquina os tempos mudam, mas a proporção deve se manter.
@@ -174,6 +204,8 @@ Verificado nesta sessão (ambiente Linux, CPU de 4 núcleos, torch 2.14, medmnis
 - **As duas redes constroem, treinam e avaliam** pelo script oficial sem nenhuma
   alteração no pipeline, incluindo o modo de inferência `--num_epochs 0 --model_path`,
   que carregou os dois checkpoints e reproduziu exatamente os números do treino.
+- **O `comparar.py` roda de ponta a ponta** com os dois checkpoints e gera as três
+  figuras. Elas foram abertas e conferidas (sem texto sobreposto nem eixo cortado).
 - `verificacao/testar_redes.py`: 5 testes passando (rede base intacta, rede enxuta
   menor e com 3 estágios, mesma interface de entrada/saída, resolução de cada estágio,
   e um treino proposital de 30 passos que derruba a perda — prova que a rede nova

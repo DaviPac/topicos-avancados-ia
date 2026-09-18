@@ -8,3 +8,7 @@ tensorboardX>=2.5
 tqdm
 numpy
 Pillow
+
+# usados apenas por comparar.py (figuras da comparacao antes x depois)
+matplotlib>=3.5
+scikit-learn>=1.0

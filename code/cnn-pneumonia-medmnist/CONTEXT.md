@@ -12,7 +12,7 @@ Leia o [`LEIAME-TRABALHO.md`](LEIAME-TRABALHO.md) para os comandos e os resultad
 |--------|----------|
 | **Dos autores** (github.com/MedMNIST/experiments, commit `70b6b3a`, Apache-2.0) | `README.md`, `LICENSE`, `MedMNIST2D/`, `MedMNIST3D/`, `.gitignore` |
 | **Alterado por este trabalho** | `MedMNIST2D/models.py`, `MedMNIST2D/train_and_eval_pytorch.py` |
-| **Novo, criado por este trabalho** | `LEIAME-TRABALHO.md`, `CONTEXT.md`, `requirements.txt`, `verificacao/` |
+| **Novo, criado por este trabalho** | `LEIAME-TRABALHO.md`, `CONTEXT.md`, `requirements.txt`, `comparar.py`, `graficos_comparacao.py`, `verificacao/` |
 
 Todo trecho alterado no código dos autores está marcado com o comentário
 `MODIFICACAO (trabalho)` — é só buscar por essa string para ver o diff inteiro.
@@ -27,6 +27,11 @@ Todo trecho alterado no código dos autores está marcado com o comentário
   Otimizador, scheduler, transformações, splits e métricas são os dos autores.
 - `MedMNIST3D/` — parte 3D do projeto original. Não é usada aqui; ficou porque a
   orientação foi copiar o projeto inteiro.
+- `comparar.py` — carrega os dois checkpoints e produz a comparação antes × depois:
+  tabela no terminal (parâmetros, AUC/ACC pelo `Evaluator` oficial, ms por imagem) e
+  as figuras. Só lê o que o script dos autores gravou; não altera nada deles.
+- `graficos_comparacao.py` — as três figuras (matriz de confusão, ROC, discordâncias).
+  Paleta escolhida para continuar legível em impressão e para daltônicos.
 - `verificacao/contar_parametros.py` — compara as duas redes (parâmetros por parte da
   rede e formato dos mapas de ativação). Não treina nada.
 - `verificacao/testar_redes.py` — testes que rodam offline em segundos. O principal
