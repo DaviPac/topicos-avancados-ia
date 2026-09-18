@@ -39,7 +39,7 @@ Uma ResNet-18 enxugada para a escala do problema (`ResNet18Slim`, em
 | Blocos por estágio | 2, 2, 2, 2 | **1, 1, 1** |
 | Canais por estágio | 64, 128, 256, 512 | **32, 64, 128** |
 | Resolução ao longo da rede | 28 → 28 → 14 → 7 → 4 | 28 → 28 → 14 → **7** |
-| Parâmetros | (ver tabela de resultados) | (ver tabela de resultados) |
+| Parâmetros | 11.168.706 | **307.042** (97,3% a menos, 36× menor) |
 
 ### Por que essa modificação
 
@@ -51,9 +51,18 @@ Uma ResNet-18 enxugada para a escala do problema (`ResNet18Slim`, em
    (0,854) e fica a 0,004 de AUC. Se dobrar a rede não melhora, a hipótese de que dá
    para cortar é razoável — e testável.
 3. **O 4º estágio é o pior negócio da rede.** Ele opera sobre mapas de 4×4 pixels,
-   resolução em que quase não resta estrutura espacial, e ainda assim concentra a
-   maior parte dos pesos (rode `verificacao/contar_parametros.py` para ver a
-   distribuição). Removê-lo é onde mais se corta com menos perda esperada.
+   resolução em que quase não resta estrutura espacial, e mesmo assim concentra
+   **8.393.728 parâmetros — 75,2% da rede inteira**. Removê-lo é onde mais se corta
+   com menos perda esperada. A distribuição completa sai de
+   `verificacao/contar_parametros.py`:
+
+   | Parte | ResNet-18 | % da rede | Vê mapas de |
+   |---|---|---|---|
+   | tronco + layer1 | 148.672 | 1,3% | 28×28 |
+   | layer2 | 525.568 | 4,7% | 14×14 |
+   | layer3 | 2.099.712 | 18,8% | 7×7 |
+   | **layer4** | **8.393.728** | **75,2%** | **4×4** |
+   | classificador | 1.026 | 0,0% | — |
 
 **Hipótese a testar:** acurácia e AUC equivalentes às da rede original, com uma fração
 dos parâmetros e do tempo de treino. O resultado é reportado como sair — inclusive se
@@ -119,20 +128,67 @@ E para mostrar o tamanho das duas redes lado a lado, sem treinar nada:
 python verificacao/contar_parametros.py   # rodar na raiz do projeto
 ```
 
+Para conferir que nada quebrou (roda offline, em segundos, sem baixar dataset):
+
+```bash
+python verificacao/testar_redes.py
+```
+
 ## Resultados
 
-_(preencher com a saída das suas execuções)_
+### Tamanho e custo (medido, independe do dataset)
+
+| | ResNet-18 (artigo) | Enxuta |
+|---|---|---|
+| Parâmetros | 11.168.706 | **307.042** (36× menos) |
+| Tempo por época em CPU de 4 núcleos¹ | ~71 s | **~7,5 s** (9,4× mais rápido) |
+| Estimativa para as 100 épocas do artigo¹ | ~2 h | **~13 min** |
+
+¹ Medido nesta sessão, com a avaliação dos três splits a cada época, que é o que o
+script dos autores faz. Na sua máquina os tempos mudam, mas a proporção deve se manter.
+
+### Acurácia no PneumoniaMNIST
+
+**A preencher com as suas execuções** — os números reais dependem do dataset
+verdadeiro, que não pôde ser baixado nesta sessão (veja a seção seguinte).
 
 | | ResNet-18 (artigo) | Enxuta | Publicado no artigo |
 |---|---|---|---|
-| Parâmetros | | | — |
 | AUC (teste) | | | 0,944 |
 | ACC (teste) | | | 0,854 |
-| Tempo por época | | | — |
+
+Ao preencher, olhe duas coisas: (1) se a coluna da ResNet-18 bate com os 0,944 / 0,854
+publicados — é o que prova que a reprodução da base está correta; (2) se a coluna da
+enxuta fica próxima da base, o que confirmaria a hipótese de que a rede do artigo é
+grande demais para este problema. Se a enxuta ficar bem abaixo, a hipótese caiu, e isso
+também é um resultado legítimo para apresentar — o que não vale é maquiar o número.
 
 ## O que já foi verificado, e o que depende de você
 
-_(preencher)_
+Verificado nesta sessão (ambiente Linux, CPU de 4 núcleos, torch 2.14, medmnist 3.0.2):
+
+- **A rede base continua idêntica à dos autores.** Comparação direta com o `models.py`
+  original do commit `70b6b3a`: mesmos nomes e formatos de parâmetros, mesma contagem
+  (11.168.706 para ResNet-18 e 23.503.298 para ResNet-50) e **a mesma saída para os
+  mesmos pesos**. Os números estão travados em `verificacao/testar_redes.py`.
+- **As duas redes constroem, treinam e avaliam** pelo script oficial sem nenhuma
+  alteração no pipeline, incluindo o modo de inferência `--num_epochs 0 --model_path`,
+  que carregou os dois checkpoints e reproduziu exatamente os números do treino.
+- `verificacao/testar_redes.py`: 5 testes passando (rede base intacta, rede enxuta
+  menor e com 3 estágios, mesma interface de entrada/saída, resolução de cada estágio,
+  e um treino proposital de 30 passos que derruba a perda — prova que a rede nova
+  aprende).
+
+**O que não pôde ser feito aqui:** esta sessão roda atrás de um proxy que bloqueia o
+Zenodo, que é de onde o pacote `medmnist` baixa o `pneumoniamnist.npz`. Para exercitar
+o pipeline, montei um `.npz` no formato exato do PneumoniaMNIST (mesmos splits
+4.708/524/624, 1 canal, 28×28, rótulos binários) a partir do MNIST, como tarefa binária
+de distinguir os dígitos 4 e 9. Nesse dado substituto a rede base fez AUC 0,99985 /
+ACC 0,99359 e a enxuta 0,99972 / 0,99199 — números que **não** dizem nada sobre
+pneumonia; servem só para provar que o encanamento funciona de ponta a ponta.
+
+**Portanto: os números da tabela de acurácia acima têm que sair da sua máquina**, com
+`--download`, que baixa o dataset verdadeiro.
 
 ## Referências
 

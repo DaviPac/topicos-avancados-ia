@@ -29,6 +29,9 @@ Todo trecho alterado no código dos autores está marcado com o comentário
   orientação foi copiar o projeto inteiro.
 - `verificacao/contar_parametros.py` — compara as duas redes (parâmetros por parte da
   rede e formato dos mapas de ativação). Não treina nada.
+- `verificacao/testar_redes.py` — testes que rodam offline em segundos. O principal
+  trava os números da rede base: se alguém mexer sem querer na `ResNet` e a base deixar
+  de ser a do artigo, a comparação antes/depois perde o sentido e o teste acusa.
 - `output/` — gerado pelo treino (checkpoints, CSVs, Tensorboard). Não versionado.
 
 ## Convenções
