@@ -1,0 +1,10 @@
+# Dependencias do MedMNIST2D/train_and_eval_pytorch.py.
+# O repositorio oficial nao traz um requirements.txt; esta lista foi montada a partir
+# dos imports do script e das instrucoes do README dos autores (pip install medmnist).
+torch>=1.13
+torchvision>=0.14
+medmnist>=3.0
+tensorboardX>=2.5
+tqdm
+numpy
+Pillow
