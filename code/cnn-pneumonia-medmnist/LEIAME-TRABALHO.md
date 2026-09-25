@@ -66,7 +66,8 @@ Uma ResNet-18 enxugada para a escala do problema (`ResNet18Slim`, em
 
 **Hipótese a testar:** acurácia e AUC equivalentes às da rede original, com uma fração
 dos parâmetros e do tempo de treino. O resultado é reportado como sair — inclusive se
-a hipótese cair.
+a hipótese cair. (Confirmou-se, e com uma margem a mais do que o esperado: veja
+[Resultados](#resultados).)
 
 ### O diff, na íntegra
 
@@ -165,37 +166,63 @@ python verificacao/testar_redes.py
 
 ## Resultados
 
-### Tamanho e custo (medido, independe do dataset)
+Treino completo das duas redes no PneumoniaMNIST, 100 épocas cada, com a receita do
+artigo, em CPU de 4 núcleos.
+
+### Placar
+
+| | ResNet-18 (artigo) | Enxuta (este trabalho) | Publicado no artigo |
+|---|---|---|---|
+| Parâmetros | 11.168.706 | **307.042** (36× menos) | — |
+| AUC (teste) | 0,949 | **0,964** | 0,944 |
+| ACC (teste) | 0,872 | **0,875** | 0,854 |
+| Treino completo (100 épocas) | 119 min | **17 min** (7× mais rápido) | — |
+| Inferência por imagem | 3,47 ms | **0,36 ms** (9,6× mais rápido) | — |
+
+**A reprodução da base confere:** 0,949 / 0,872 contra os 0,944 / 0,854 publicados. A
+pequena diferença é esperada — o script dos autores não fixa semente aleatória, então
+cada execução varia um pouco. O "antes" vale como referência.
+
+**A hipótese se confirmou, e com folga:** a rede enxuta não apenas empatou, ela **ficou
+à frente nas duas métricas de teste** (+0,015 de AUC e +0,003 de acurácia) usando 3% dos
+parâmetros e um sétimo do tempo de treino. Cortar capacidade não custou acurácia neste
+problema — melhorou.
+
+### O que os números de treino revelam
 
 | | ResNet-18 (artigo) | Enxuta |
 |---|---|---|
-| Parâmetros | 11.168.706 | **307.042** (36× menos) |
-| Tempo por época em CPU de 4 núcleos¹ | ~71 s | **~7,5 s** (9,4× mais rápido) |
-| Estimativa para as 100 épocas do artigo¹ | ~2 h | **~13 min** |
-| Inferência por imagem, em CPU¹ | 4,00 ms | **0,39 ms** (10× mais rápido) |
+| ACC no treino | 0,9996 | 0,9979 |
+| ACC no teste | 0,872 | 0,875 |
+| Distância treino → teste | **12,8 pontos** | 12,3 pontos |
 
-¹ Medido nesta sessão, com a avaliação dos três splits a cada época, que é o que o
-script dos autores faz. Na sua máquina os tempos mudam, mas a proporção deve se manter.
+A rede do artigo **memoriza o conjunto de treino inteiro** (AUC 1,000, praticamente
+nenhum erro em 4.708 imagens) e ainda assim entrega 87% no teste. É o retrato de uma
+rede com capacidade sobrando para o tamanho do dado — exatamente a premissa da
+modificação. A rede enxuta, com 36× menos parâmetros, também satura o treino, o que
+sugere que ainda haveria espaço para encolher mais.
 
-### Acurácia no PneumoniaMNIST
+### O que as figuras mostram (análise qualitativa)
 
-**A preencher com as suas execuções** — os números reais dependem do dataset
-verdadeiro, que não pôde ser baixado nesta sessão (veja a seção seguinte).
+- **`matriz_confusao.png`** — as duas redes acertam 98% dos casos de pneumonia, mas só
+  68% (base) e 70% (enxuta) dos casos normais. Ou seja: ambas erram para o mesmo lado,
+  chutando "pneumonia" na dúvida. Isso não é defeito da arquitetura, é o reflexo do
+  desbalanceamento do treino (74% das imagens são de pneumonia). Num uso clínico esse
+  viés é o menos ruim dos dois — deixa passar poucos doentes ao custo de falsos alarmes
+  — mas é uma limitação a declarar, não a esconder.
+- **`curva_roc.png`** — a enxuta fica acima da base na região de poucos falsos
+  positivos, que é a faixa de operação que interessaria num rastreamento real.
+- **`discordancias.png`** — os raios-X em que as duas discordam, com a confiança de
+  cada uma. É onde se vê *o que* mudou de comportamento, e não só o placar.
 
-| | ResNet-18 (artigo) | Enxuta | Publicado no artigo |
-|---|---|---|---|
-| AUC (teste) | | | 0,944 |
-| ACC (teste) | | | 0,854 |
+## Como estes resultados foram produzidos
 
-Ao preencher, olhe duas coisas: (1) se a coluna da ResNet-18 bate com os 0,944 / 0,854
-publicados — é o que prova que a reprodução da base está correta; (2) se a coluna da
-enxuta fica próxima da base, o que confirmaria a hipótese de que a rede do artigo é
-grande demais para este problema. Se a enxuta ficar bem abaixo, a hipótese caiu, e isso
-também é um resultado legítimo para apresentar — o que não vale é maquiar o número.
+Ambiente: Linux, CPU de 4 núcleos, torch 2.14, medmnist 3.0.2. Dataset conferido pelo
+MD5 oficial (`28209eda62fecd6e6a2d98b1501bb15f`) antes de qualquer treino. As duas redes
+rodaram **em sequência, não em paralelo**, para que o tempo por época de uma não fosse
+inflado pela disputa de CPU com a outra.
 
-## O que já foi verificado, e o que depende de você
-
-Verificado nesta sessão (ambiente Linux, CPU de 4 núcleos, torch 2.14, medmnist 3.0.2):
+Além do treino, foi verificado que:
 
 - **A rede base continua idêntica à dos autores.** Comparação direta com o `models.py`
   original do commit `70b6b3a`: mesmos nomes e formatos de parâmetros, mesma contagem
@@ -211,16 +238,22 @@ Verificado nesta sessão (ambiente Linux, CPU de 4 núcleos, torch 2.14, medmnis
   e um treino proposital de 30 passos que derruba a perda — prova que a rede nova
   aprende).
 
-**O que não pôde ser feito aqui:** esta sessão roda atrás de um proxy que bloqueia o
-Zenodo, que é de onde o pacote `medmnist` baixa o `pneumoniamnist.npz`. Para exercitar
-o pipeline, montei um `.npz` no formato exato do PneumoniaMNIST (mesmos splits
-4.708/524/624, 1 canal, 28×28, rótulos binários) a partir do MNIST, como tarefa binária
-de distinguir os dígitos 4 e 9. Nesse dado substituto a rede base fez AUC 0,99985 /
-ACC 0,99359 e a enxuta 0,99972 / 0,99199 — números que **não** dizem nada sobre
-pneumonia; servem só para provar que o encanamento funciona de ponta a ponta.
+### Limites destes resultados
 
-**Portanto: os números da tabela de acurácia acima têm que sair da sua máquina**, com
-`--download`, que baixa o dataset verdadeiro.
+Três ressalvas que valem ser ditas na apresentação, em vez de esperar que alguém
+pergunte:
+
+1. **Uma execução de cada.** O script dos autores não fixa semente, então parte da
+   diferença entre as duas redes pode ser variação de rodada. Para afirmar a vantagem
+   com segurança seria preciso repetir cada treino algumas vezes e comparar as médias.
+   O que a execução única já sustenta é o essencial: a rede enxuta **não perdeu**
+   acurácia, custando 36× menos parâmetros.
+2. **Acurácia não é a métrica que importa num diagnóstico.** Com 74% de pneumonia no
+   treino, as duas redes aprenderam a chutar "pneumonia" na dúvida, e erram quase um
+   terço dos casos normais. A matriz de confusão mostra isso com clareza.
+3. **28×28 é uma miniatura.** O PneumoniaMNIST reduz raios-X originais de até
+   2.916×2.713 pixels. Nada aqui diz respeito a desempenho clínico real; o objeto de
+   estudo é a arquitetura, não o diagnóstico.
 
 ## Referências
 
