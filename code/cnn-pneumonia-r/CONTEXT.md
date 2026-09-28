@@ -6,6 +6,11 @@ que está em `../cnn-pneumonia-medmnist/dados/pneumoniamnist.npz`.
 
 - `cnn_pneumonia.R` — o script inteiro, em seções numeradas para rodar uma a uma no
   RStudio: pacotes, leitura dos dados, preparação, a CNN, treino, avaliação e exemplos.
+- `slides/` — a videoaula (1ª VA, 28/09): `videoaula_cnn_r.pptx` com o roteiro
+  cronometrado nas notas do apresentador, e `LEIAME.md` com como gravar e entregar.
+  O deck é gerado por `gerar_slides.js` (tema em `tema.js`, conteúdo em `parte1-3.js`).
+  As figuras em `slides/img/` saíram das próprias funções do script em R.
+  A matriz de confusão nos slides é a da execução real do script em R (158/76/6/384).
 
 ## O que foi verificado e como
 
