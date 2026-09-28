@@ -16,7 +16,7 @@ function pratica(pres) {
   s.addNotes("[21:50–25:20] PRÁTICA NO RSTUDIO (câmera opcional aqui). Rode seção por seção e comente o que aparece. Seção 3: os 10 raios-X e a contagem 1214 normal × 3494 pneumonia. Seção 5: a rede impressa e o total de 105.346 pesos. Seção 6: a cada época, a perda cai e a AUC da validação sobe. Seção 7: acurácia, AUC e matriz de confusão do teste. Seção 8: a rede dando a probabilidade de pneumonia de raios-X que ela nunca viu.");
 }
 
-function resultados(pres) {
+function resultados(pres, notas) {
   const s = pres.addSlide(); titulo(s, "Resultado no teste: 624 raios-X novos");
   const c = (t, o = {}) => ({ text: t, options: Object.assign({ align: "center", valign: "middle" }, o) });
   s.addTable([
@@ -32,7 +32,7 @@ function resultados(pres) {
   destaque(pres, s, 8.4, 1.5, 4.33, 1.7, "86,9%", "acurácia: 542 acertos em 624", { tamanho: 32 });
   destaque(pres, s, 8.4, 3.35, 4.33, 1.7, "98,5%", "sensibilidade: das 390 pneumonias, 384 detectadas", { tamanho: 32 });
   destaque(pres, s, 8.4, 5.2, 4.33, 1.7, "67,5%", "especificidade: dos 234 normais, 158 reconhecidos", { tamanho: 32, corNumero: COR.destaque });
-  s.addNotes("[25:20–26:15] Leia a matriz: a diagonal são os acertos. A rede quase não deixa passar pneumonia — só 6 em 390 —, mas dá alarme falso em 76 das 234 crianças saudáveis. Se a execução da gravação der números um pouco diferentes, leia os da tela.");
+  s.addNotes(notas || "[25:20–26:15] Leia a matriz: a diagonal são os acertos. A rede quase não deixa passar pneumonia — só 6 em 390 —, mas dá alarme falso em 76 das 234 crianças saudáveis. Se a execução da gravação der números um pouco diferentes, leia os da tela.");
 }
 
 function licoes(pres) {

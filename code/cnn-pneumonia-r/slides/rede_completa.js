@@ -39,7 +39,7 @@ function parte(pres, s, x1, x2, rotulo) {
   linha(pres, s, x1, 1.78, x2, 1.78, COR.destaque, 1.5);
 }
 
-function redeCompleta(pres) {
+function redeCompleta(pres, notas) {
   const s = pres.addSlide(); titulo(s, "A rede completa");
   parte(pres, s, 1.75, 6.85, "Parte 1 · encontrar padrões");
   parte(pres, s, 7.0, 12.73, "Parte 2 · decidir");
@@ -89,7 +89,7 @@ function redeCompleta(pres) {
     ["Cada círculo é um neurônio e cada cor, um mapa. ", "Só alguns aparecem; os tamanhos reais e o nome no código estão embaixo."],
     ["Convolução: ", "cada neurônio se liga só aos vizinhos (em laranja, um exemplo). Camada densa e saída: liga-se a todos da coluna anterior."],
   ], { x: 0.6, y: 6.62, w: 12.13, h: 0.8, fontSize: 12, paraSpaceAfter: 2 });
-  s.addNotes("[12:10–13:10] Este é o desenho da rede inteira, com os neurônios e as conexões. Percorra da esquerda para a direita. Os pixels da entrada ligam-se aos neurônios da convolução 1 — cada neurônio olha só os vizinhos, como o filtro 3 × 3 (o exemplo em laranja). Cada cor é um mapa, gerado por um filtro. O pooling junta os neurônios de 2 em 2. Na convolução 2, cada neurônio olha os vizinhos em todos os mapas anteriores e há mais mapas. Achatar põe todos os mapas numa fila só — veja as cores em sequência. Daí em diante, cada neurônio se liga a todos: camada densa e os 2 neurônios de saída, normal e pneumonia, que o softmax transforma em probabilidades. O dropout fica entre a camada densa e a saída e só age no treino. Aponte os nomes em laranja: são os que vão aparecer no código.");
+  s.addNotes(notas || "[12:10–13:10] Este é o desenho da rede inteira, com os neurônios e as conexões. Percorra da esquerda para a direita. Os pixels da entrada ligam-se aos neurônios da convolução 1 — cada neurônio olha só os vizinhos, como o filtro 3 × 3 (o exemplo em laranja). Cada cor é um mapa, gerado por um filtro. O pooling junta os neurônios de 2 em 2. Na convolução 2, cada neurônio olha os vizinhos em todos os mapas anteriores e há mais mapas. Achatar põe todos os mapas numa fila só — veja as cores em sequência. Daí em diante, cada neurônio se liga a todos: camada densa e os 2 neurônios de saída, normal e pneumonia, que o softmax transforma em probabilidades. O dropout fica entre a camada densa e a saída e só age no treino. Aponte os nomes em laranja: são os que vão aparecer no código.");
 }
 
 module.exports = { redeCompleta };

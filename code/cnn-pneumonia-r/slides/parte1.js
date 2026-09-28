@@ -1,14 +1,14 @@
 // Slides 1-8: abertura, o que é uma rede neural e uma CNN, convolução e filtros.
 const { COR, FONTE, L, img, texto, titulo, cartao, paragrafos, grade, cinza, seta } = require("./tema");
 
-function capa(pres) {
+function capa(pres, notas) {
   const s = pres.addSlide(); s.background = { color: COR.escuro };
   texto(s, "Análise de Dados · 1ª VA", { x: L.margem, y: 0.9, w: 7, h: 0.4, fontSize: 14, color: COR.sobreEscuro, charSpacing: 2 });
   texto(s, "Redes Neurais Convolucionais", { x: L.margem, y: 1.5, w: 8.6, h: 1.8, fontFace: FONTE.titulo, fontSize: 50, bold: true, color: COR.branco, valign: "middle" });
   texto(s, "Classificando raios-X de tórax (normal ou pneumonia) com o pacote torch do R", { x: L.margem, y: 3.45, w: 8, h: 1, fontSize: 24, color: COR.sobreEscuro });
   texto(s, "Davi Pires Aquino de Carvalho · UFRPE", { x: L.margem, y: 6.3, w: 8, h: 0.4, fontSize: 14, color: COR.sobreEscuro });
   s.addImage({ path: img("raiox_um.png"), x: 9.4, y: 1.5, w: 3.3, h: 3.3 });
-  s.addNotes("[0:00–0:30] Apresente-se: nome, curso, disciplina. Gancho: 'Um computador consegue olhar um raio-X de tórax e dizer se a criança tem pneumonia? Nesta aula eu mostro como, com uma rede neural convolucional treinada em R.'");
+  s.addNotes(notas || "[0:00–0:30] Apresente-se: nome, curso, disciplina. Gancho: 'Um computador consegue olhar um raio-X de tórax e dizer se a criança tem pneumonia? Nesta aula eu mostro como, com uma rede neural convolucional treinada em R.'");
 }
 
 function roteiro(pres) {
@@ -26,7 +26,7 @@ function roteiro(pres) {
   s.addNotes("[0:30–1:00] Mostre o roteiro: primeiro a teoria (o que é uma CNN e como ela aprende), depois os dados, o código em R, a prática com os resultados e, no final, exercícios.");
 }
 
-function problema(pres) {
+function problema(pres, notas) {
   const s = pres.addSlide(); titulo(s, "O problema: este raio-X mostra pneumonia?");
   s.addImage({ path: img("raiox_um.png"), x: L.margem, y: 1.6, w: 2.6, h: 2.6 });
   texto(s, "entrada: raio-X de tórax, 28 × 28 pixels", { x: L.margem, y: 4.3, w: 2.6, h: 0.7, fontSize: 13, color: COR.tintaFraca, align: "center" });
@@ -41,7 +41,7 @@ function problema(pres) {
     ["Classificação: ", "o modelo coloca cada raio-X em uma de duas classes: normal ou pneumonia."],
     ["Aprendizado supervisionado: ", "o modelo aprende a partir de milhares de raios-X que já têm o diagnóstico dado por médicos."],
   ], { x: L.margem, y: 5.2, w: L.util, h: 1.9, fontSize: 17 });
-  s.addNotes("[1:00–1:50] Defina a tarefa: entra uma imagem, sai a probabilidade de pneumonia. É um problema de classificação: duas classes possíveis. O modelo aprende com exemplos já diagnosticados.");
+  s.addNotes(notas || "[1:00–1:50] Defina a tarefa: entra uma imagem, sai a probabilidade de pneumonia. É um problema de classificação: duas classes possíveis. O modelo aprende com exemplos já diagnosticados.");
 }
 
 function neuronio(pres) {

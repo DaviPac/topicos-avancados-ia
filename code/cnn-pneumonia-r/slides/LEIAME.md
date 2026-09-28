@@ -22,6 +22,19 @@ Para regenerar o deck: `npm install pptxgenjs && node gerar_slides.js`.
 A duração exigida é de 20 a 30 min. Se passar de 30, encurte a prática; se ficar
 abaixo de 20, comente mais cada seção do script.
 
+## Pitch de 5 minutos
+
+`pitch_cnn_r.pptx` (6 slides; gerar com `node pitch.js`), com o roteiro nas anotações:
+
+| Tempo | Slide |
+|-------|-------|
+| 0:00–0:20 | Capa |
+| 0:20–1:00 | O problema |
+| 1:00–2:15 | A rede completa |
+| 2:15–3:15 | Em R, de ponta a ponta |
+| 3:15–4:15 | Resultado no teste |
+| 4:15–5:00 | O que fica |
+
 ## Gravar
 
 A câmera precisa aparecer **o tempo todo**. Só na parte prática ela é opcional.
