@@ -38,10 +38,10 @@ function problema(pres) {
   texto(s, "probabilidade de pneumonia", { x: 8.7, y: 2.05, w: 3.8, h: 0.5, fontSize: 15, color: COR.tintaFraca });
   texto(s, "ex.: 87% → pneumonia", { x: 8.7, y: 2.6, w: 3.8, h: 1.0, fontFace: FONTE.titulo, fontSize: 28, bold: true, color: COR.destaque, valign: "middle" });
   paragrafos(s, [
-    ["Classificação: ", "cada observação recebe uma de duas classes, normal ou pneumonia — como na regressão logística. A diferença é que aqui cada observação é uma imagem, não uma linha de tabela."],
+    ["Classificação: ", "o modelo coloca cada raio-X em uma de duas classes: normal ou pneumonia."],
     ["Aprendizado supervisionado: ", "o modelo aprende a partir de milhares de raios-X que já têm o diagnóstico dado por médicos."],
   ], { x: L.margem, y: 5.2, w: L.util, h: 1.9, fontSize: 17 });
-  s.addNotes("[1:00–2:00] Defina a tarefa: entra uma imagem, sai a probabilidade de pneumonia. Ligue com o que a turma conhece: é classificação, como a regressão logística, só que a entrada é uma imagem. O modelo aprende com exemplos já diagnosticados.");
+  s.addNotes("[1:00–2:00] Defina a tarefa: entra uma imagem, sai a probabilidade de pneumonia. É um problema de classificação: duas classes possíveis. O modelo aprende com exemplos já diagnosticados.");
 }
 
 function neuronio(pres) {
@@ -62,12 +62,12 @@ function neuronio(pres) {
   texto(s, "b + w₁x₁ + w₂x₂ + w₃x₃", { x: L.margem, y: 5.3, w: 5.8, h: 0.6, fontFace: FONTE.titulo, fontSize: 24, bold: true, align: "center" });
   texto(s, "um neurônio", { x: L.margem, y: 5.9, w: 5.8, h: 0.4, fontSize: 14, color: COR.tintaFraca, align: "center" });
   paragrafos(s, [
-    ["Neurônio: ", "multiplica cada entrada por um peso, soma tudo e soma um intercepto b. É a fórmula da regressão linear."],
-    ["Pesos: ", "não são escolhidos à mão. São aprendidos a partir dos dados, como os coeficientes de uma regressão."],
+    ["Neurônio: ", "multiplica cada entrada por um peso e soma tudo (isso se chama soma ponderada), mais um número fixo, b. Ex.: entradas 2, 1, 3 e pesos 0,5, −1, 2 → 1 − 1 + 6 = 6, mais b."],
+    ["Pesos: ", "não são escolhidos à mão: começam sorteados e são ajustados no treino, a partir dos exemplos."],
     ["Rede neural: ", "muitos neurônios organizados em camadas. A saída de uma camada é a entrada da próxima."],
     ["Camada densa: ", "camada em que cada neurônio recebe todas as saídas da camada anterior."],
   ], { x: 7.0, y: 1.6, w: 5.73, h: 5.2, fontSize: 17, paraSpaceAfter: 14 });
-  s.addNotes("[2:00–3:30] Antes da CNN, a peça básica. Um neurônio é uma soma ponderada: pega as entradas, multiplica cada uma por um peso, soma, e soma um intercepto. Quem fez regressão linear já conhece essa fórmula. A rede neural junta muitos desses em camadas. Os pesos começam sorteados e são ajustados com os dados — como estimar os coeficientes de uma regressão. Camada densa é o nome da camada em que cada neurônio olha todas as entradas.");
+  s.addNotes("[2:00–3:30] Antes da CNN, a peça básica. Um neurônio é uma soma ponderada: pega as entradas, multiplica cada uma por um peso, soma, e soma mais um número fixo. Faça a conta do exemplo. A rede neural junta muitos desses em camadas. Os pesos começam sorteados e são ajustados no treino, a partir dos exemplos. Camada densa é o nome da camada em que cada neurônio olha todas as entradas.");
 }
 
 function oQueECNN(pres) {
@@ -137,7 +137,7 @@ function filtrosAprendidos(pres) {
   paragrafos(s, [
     ["Ninguém escreve esses números. ", "No início do treino, os pesos de cada filtro são sorteados — o filtro ainda não detecta nada útil."],
     ["O treino ajusta os pesos ", "pouco a pouco, para diminuir o erro da rede. Assim, cada filtro vira um detector de algum padrão que ajuda a separar normal de pneumonia."],
-    ["É como numa regressão: ", "os coeficientes são estimados a partir dos dados."],
+    ["Um filtro é só um conjunto de 9 pesos, ", "iguais aos pesos do neurônio do começo da aula — por isso é aprendido do mesmo jeito."],
     "A rede deste vídeo aprende 16 filtros na 1ª convolução e 32 na 2ª. O filtro de borda ao lado foi escolhido à mão só para ilustrar.",
   ], { x: 7.8, y: 1.5, w: 4.93, h: 5.5, fontSize: 16, paraSpaceAfter: 12 });
   s.addNotes("[6:45–7:45] Ponto central: os filtros não são programados. Começam com números aleatórios e o treino os ajusta — como, eu mostro daqui a pouco. Aqui, à esquerda, o resultado real de passar um filtro de borda vertical, escolhido à mão, por este raio-X: o mapa acende nas bordas das costelas e dos pulmões. Na rede, são 16 filtros diferentes, cada um gerando o seu mapa.");

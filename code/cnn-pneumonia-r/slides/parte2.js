@@ -14,12 +14,12 @@ function relu(pres) {
   grade(pres, s, 4.1, 5.1, [[0, 0, 2, 5]], 0.6, (v) => [v > 0 ? "FAD3C2" : COR.cartao, COR.tinta]);
   texto(s, "ReLU(x) = max(0, x)", { x: L.margem, y: 5.9, w: 6.4, h: 0.5, fontFace: FONTE.titulo, fontSize: 20, bold: true, align: "center" });
   paragrafos(s, [
-    ["O que faz: ", "valores negativos viram zero; valores positivos passam sem mudança."],
-    ["Por que, 1: ", "no mapa, valor negativo quer dizer que o padrão do filtro não está ali. Zerando, sobra no mapa só onde o padrão foi encontrado (o laranja)."],
-    ["Por que, 2: ", "somas ponderadas empilhadas continuam sendo uma soma ponderada — sem a ReLU, a rede inteira seria uma grande regressão linear. A ReLU dobra essa reta e permite aprender relações complexas."],
-    ["Onde: ", "depois de cada convolução e depois da camada densa."],
-  ], { x: 7.4, y: 1.5, w: 5.33, h: 5.6, fontSize: 16, paraSpaceAfter: 12 });
-  s.addNotes("[7:45–8:45] Mostre o antes e depois: o azul some, fica só o laranja. Dois motivos para a ReLU. Primeiro, ela limpa o mapa: fica só onde o filtro achou o padrão. Segundo, e mais importante: se a rede só fizesse somas ponderadas, uma depois da outra, o resultado final ainda seria uma soma ponderada, uma regressão linear. A ReLU quebra essa linearidade e deixa a rede aprender relações mais complicadas.");
+    ["O que faz: ", "todo número negativo do mapa vira 0; os positivos continuam iguais (veja os números embaixo)."],
+    ["Motivo 1, limpar o mapa: ", "no mapa, número positivo alto quer dizer “o padrão do filtro está aqui”; número negativo quer dizer “aqui há o contrário do padrão”. A próxima camada só precisa saber onde o padrão está. A ReLU apaga o resto: o azul some e fica só o laranja."],
+    ["Motivo 2, fazer cada camada valer a pena: ", "sem a ReLU, cada camada só multiplica e soma, e várias contas de multiplicar e somar seguidas se resumem a uma só (dobrar e depois triplicar é o mesmo que multiplicar por 6). Dez camadas fariam o mesmo que uma. O corte no zero entre elas impede esse resumo, e cada camada consegue aprender algo novo."],
+    ["Onde ela fica: ", "logo depois de cada convolução, antes do pooling (convolução → ReLU → pooling). Também aparece depois da camada densa, que vem mais adiante."],
+  ], { x: 7.4, y: 1.4, w: 5.33, h: 5.8, fontSize: 15, paraSpaceAfter: 10 });
+  s.addNotes("[7:45–8:45] Mostre o antes e depois: o azul some, fica só o laranja. Dois motivos. Primeiro, ela limpa o mapa: fica só onde o filtro achou o padrão. Segundo: sem ela, empilhar camadas não adiantaria, porque multiplicar e somar várias vezes seguidas dá o mesmo que multiplicar e somar uma vez só — use o exemplo de dobrar e triplicar, que dá multiplicar por 6. O corte no zero quebra isso. Por fim, mostre onde ela fica: sempre logo depois da convolução.");
 }
 
 function pooling(pres) {
@@ -37,7 +37,7 @@ function pooling(pres) {
   paragrafos(s, [
     ["O que faz: ", "divide o mapa em blocos de 2 × 2 pixels e guarda só o maior valor de cada bloco."],
     ["Resultado: ", "o mapa fica com metade da largura e metade da altura (um quarto dos números), mas os lugares onde o padrão foi encontrado continuam marcados."],
-    ["Por quê: ", "menos contas nas camadas seguintes, e um padrão deslocado um pixel para o lado dá quase o mesmo resultado."],
+    ["Por quê: ", "1) com o mapa 4 vezes menor, as camadas seguintes têm menos contas a fazer. 2) importa saber se o padrão apareceu naquela região, não em qual pixel exato: se uma borda está num pixel ou no vizinho, dentro do mesmo bloco, o maior valor do bloco é o mesmo."],
     ["E depois? ", "O mapa reduzido é uma imagem menor. Ele vira a entrada da próxima convolução, que procura padrões nesses mapas."],
   ], { x: 7.4, y: 1.5, w: 5.33, h: 5.6, fontSize: 16, paraSpaceAfter: 12 });
   s.addNotes("[8:45–9:45] Pooling: de cada bloco de 2 por 2, fica o maior valor. O mapa encolhe pela metade em cada direção, mas o sinal forte continua lá — compare o mapa real de 28 por 28 com o de 14 por 14. E responda a dúvida natural: sim, o que sai daqui é uma imagem menor, que entra na próxima convolução.");
@@ -57,12 +57,11 @@ function jornada(pres) {
   });
   paragrafos(s, [
     ["Como ler “16 mapas 14 × 14”: ", "cada um dos 16 filtros gera um mapa; cada mapa tem 14 linhas e 14 colunas."],
-    ["De onde vêm 16 e 32: ", "é quem monta a rede que escolhe quantos filtros cada convolução tem."],
     ["28 → 14 → 7: ", "cada pooling corta o tamanho pela metade."],
-    ["Do simples ao complexo: ", "os filtros da 2ª convolução olham os 16 mapas da 1ª ao mesmo tempo. Assim, combinam padrões simples (bordas) em padrões mais complexos (formas, texturas)."],
+    ["Por que 32 filtros na 2ª convolução e só 16 na 1ª? ", "a 1ª procura padrões simples (bordas, contrastes), e há poucos tipos deles. Os filtros da 2ª olham os 16 mapas da 1ª ao mesmo tempo e combinam esses padrões simples em padrões mais complexos (formas, texturas). Há muito mais combinações possíveis, então vale ter mais filtros. E como o pooling encolheu os mapas, 32 mapas de 14 × 14 (6.272 números) ainda ocupam metade do espaço de 16 mapas de 28 × 28 (12.544). Os valores exatos, 16 e 32, são escolhas de quem monta a rede."],
     ["1.568 = 32 × 7 × 7: ", "todos os números dos 32 mapas, postos em fila."],
-  ], { x: L.margem, y: 3.95, w: L.util, h: 3.2, fontSize: 16, paraSpaceAfter: 8 });
-  s.addNotes("[9:45–10:45] Junte as peças e siga um raio-X. Entra 1 imagem de 28 por 28. A primeira convolução gera 16 mapas; o pooling os reduz para 14 por 14. A segunda convolução gera 32 mapas, reduzidos para 7 por 7. Aí começa a parte 2: achatar, camada densa e saída. Explique cada número: 16 e 32 são escolhas; 14 e 7 vêm do pooling; 1.568 é 32 vezes 7 vezes 7.");
+  ], { x: L.margem, y: 3.85, w: L.util, h: 3.4, fontSize: 15, paraSpaceAfter: 8 });
+  s.addNotes("[9:45–10:45] Junte as peças e siga um raio-X. Entra 1 imagem de 28 por 28. A primeira convolução gera 16 mapas; o pooling os reduz para 14 por 14. A segunda convolução gera 32 mapas, reduzidos para 7 por 7. Aí começa a parte 2: achatar, camada densa e saída. Explique cada número: 14 e 7 vêm do pooling; 1.568 é 32 vezes 7 vezes 7. E por que a 2ª convolução tem mais filtros: ela combina os padrões simples da 1ª em padrões mais complexos, e há muito mais combinações do que padrões simples.");
 }
 
 function achatarDensa(pres) {
@@ -103,10 +102,9 @@ function saida(pres) {
   paragrafos(s, [
     ["Pontuação: ", "a última camada tem 2 neurônios, um para cada classe. Cada um dá um número qualquer (pode ser negativo, pode ser 50): quanto maior, mais a imagem se parece com aquela classe."],
     ["Softmax: ", "transforma as pontuações em probabilidades que somam 100%.  p(pneumonia) = e^3,1 / (e^1,2 + e^3,1) = 0,87."],
-    ["Com 2 classes, ", "o softmax é a mesma função logística da regressão logística."],
     ["Decisão: ", "a classe de maior probabilidade — o mesmo que cortar em 50%."],
   ], { x: L.margem, y: 4.1, w: L.util, h: 3.0, fontSize: 17, paraSpaceAfter: 10 });
-  s.addNotes("[11:45–12:45] A rede termina com dois números, as pontuações — uma para normal, outra para pneumonia. Sozinhas elas não são probabilidades. O softmax as converte: eleva e a cada pontuação e divide pelo total; aqui dá 13% e 87%. Quem conhece regressão logística: com duas classes é a mesma função logística. A resposta final é a classe mais provável.");
+  s.addNotes("[11:45–12:45] A rede termina com dois números, as pontuações — uma para normal, outra para pneumonia. Sozinhas elas não são probabilidades. O softmax as converte: eleva e a cada pontuação e divide pelo total; aqui dá 13% e 87%. A resposta final é a classe mais provável.");
 }
 
 function entropia(pres) {
@@ -123,9 +121,8 @@ function entropia(pres) {
     ["Para que serve: ", "para aprender, a rede precisa de um único número que diga o quanto ela errou. É esse número que o treino tenta diminuir."],
     ["Como funciona: ", "quanto menor a probabilidade dada à classe certa, maior a perda. Errar com alta probabilidade custa muito mais do que errar por pouco."],
     ["No lote: ", "a perda é a média das perdas de cada imagem."],
-    ["Parente conhecido: ", "é o mesmo critério da regressão logística. Na regressão linear, o papel é da soma dos quadrados dos erros."],
   ], { x: L.margem, y: 4.8, w: L.util, h: 2.4, fontSize: 16, paraSpaceAfter: 6 });
-  s.addNotes("[12:45–13:45] Para aprender, a rede precisa medir o erro. Na classificação, a medida é a entropia cruzada: o menos logaritmo da probabilidade que a rede deu à classe correta. Leia a tabela: 90% na classe certa, perda baixa; 10%, perda alta. Faça a ponte com a regressão linear, onde o erro é medido pela soma dos quadrados.");
+  s.addNotes("[12:45–13:45] Para aprender, a rede precisa medir o erro. Na classificação, a medida é a entropia cruzada: o menos logaritmo da probabilidade que a rede deu à classe correta. Leia a tabela: 90% na classe certa, perda baixa; 10%, perda alta.");
 }
 
 function descida(pres) {
