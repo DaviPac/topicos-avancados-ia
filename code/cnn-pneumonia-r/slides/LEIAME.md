@@ -1,6 +1,6 @@
 # Videoaula — CNN em R (Análise de Dados, 1ª VA)
 
-`videoaula_cnn_r.pptx`: 20 slides, ~29 min. O roteiro de cada slide, com o minuto de
+`videoaula_cnn_r.pptx`: 29 slides, ~30 min. O roteiro de cada slide, com o minuto de
 início e fim, está nas **notas do apresentador** (no PowerPoint: Exibir > Anotações).
 
 Para regenerar o deck: `npm install pptxgenjs && node gerar_slides.js`.
@@ -9,13 +9,15 @@ Para regenerar o deck: `npm install pptxgenjs && node gerar_slides.js`.
 
 | Tempo | Slides | Bloco |
 |-------|--------|-------|
-| 0:00–1:30 | 1–2 | Apresentação (nome, disciplina) e roteiro |
-| 1:30–10:00 | 3–8 | Teoria: imagem como números, convolução, ReLU, pooling, softmax |
-| 10:00–14:45 | 9–12 | Treino, divisão dos dados, a base PneumoniaMNIST, "adivinhe" |
-| 14:45–18:00 | 13–15 | torch no R e o código da rede e do treino |
-| 18:00–25:00 | 16 | **Prática:** rodar `cnn_pneumonia.R` no RStudio, seção por seção |
-| 25:00–27:15 | 17–18 | Resultados e lições |
-| 27:15–29:00 | 19–20 | Exercícios, resumo e referências |
+| 0:00–1:00 | 1–2 | Apresentação e roteiro |
+| 1:00–5:30 | 3–6 | O problema, o que é uma rede neural, o que é uma CNN, imagem como números |
+| 5:30–12:45 | 7–13 | Cada peça: convolução, filtros aprendidos, ReLU, pooling, a jornada pela rede, achatar e camada densa, saída |
+| 12:45–15:45 | 14–16 | Como a rede aprende: entropia cruzada, backpropagation e Adam, treino/validação/teste |
+| 15:45–17:00 | 17–18 | Os dados e o "adivinhe" |
+| 17:00–22:00 | 19–24 | O pacote torch e o código em R, linha a linha |
+| 22:00–26:00 | 25 | **Prática:** rodar `cnn_pneumonia.R` no RStudio, seção por seção |
+| 26:00–28:00 | 26–27 | Resultados e lições |
+| 28:00–29:45 | 28–29 | Exercícios, resumo e referências |
 
 A duração exigida é de 20 a 30 min. Se passar de 30, encurte a prática; se ficar
 abaixo de 20, comente mais cada seção do script.

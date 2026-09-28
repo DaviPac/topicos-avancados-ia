@@ -85,25 +85,33 @@ treino    <- preparar(dados$train_images, dados$train_labels)
 validacao <- preparar(dados$val_images,   dados$val_labels)
 teste     <- preparar(dados$test_images,  dados$test_labels)
 
-lotes <- dataloader(tensor_dataset(treino$x, treino$y), batch_size = 128, shuffle = TRUE)
+lotes <- dataloader(tensor_dataset(treino$x, treino$y),   # imagens + diagnósticos
+                    batch_size = 128, shuffle = TRUE)    # lotes de 128, embaralhados
 
 
 # ---- 5. A CNN ----------------------------------------------------------------
 CNN <- nn_module(
   "CNNSimples",
+  # initialize: as peças da rede
   initialize = function() {
-    self$conv1 <- nn_conv2d(1, 16, kernel_size = 3, padding = 1)    # 16 filtros 3x3
-    self$conv2 <- nn_conv2d(16, 32, kernel_size = 3, padding = 1)   # 32 filtros 3x3
-    self$fc1   <- nn_linear(32 * 7 * 7, 64)                         # camada densa
-    self$fc2   <- nn_linear(64, 2)                                  # 2 saídas: normal, pneumonia
-    self$drop  <- nn_dropout(0.3)                                   # desliga 30% ao acaso no treino
+    self$convolucao1 <- nn_conv2d(1, 16, kernel_size = 3, padding = 1)   # 16 filtros 3x3
+    self$convolucao2 <- nn_conv2d(16, 32, kernel_size = 3, padding = 1)  # 32 filtros 3x3
+    self$densa       <- nn_linear(32 * 7 * 7, 64)                        # camada densa: 64 neurônios
+    self$saida       <- nn_linear(64, 2)                                 # 2 pontuações: normal, pneumonia
+    self$dropout     <- nn_dropout(0.3)                                  # desliga 30% ao acaso no treino
   },
-  forward = function(x) {                             # entrada:  1 x 28 x 28
-    x <- nnf_max_pool2d(nnf_relu(self$conv1(x)), 2)   #          16 x 14 x 14
-    x <- nnf_max_pool2d(nnf_relu(self$conv2(x)), 2)   #          32 x  7 x  7
-    x <- torch_flatten(x, start_dim = 2)              #          1568 números
-    x <- self$drop(nnf_relu(self$fc1(x)))             #            64
-    self$fc2(x)                                       # saída:      2 notas
+  # forward: o caminho que a imagem percorre, um passo por linha
+  forward = function(x) {                   # entrada: 1 imagem 28 x 28
+    x <- self$convolucao1(x)                # 16 mapas 28 x 28
+    x <- nnf_relu(x)                        # negativos viram zero
+    x <- nnf_max_pool2d(x, 2)               # 16 mapas 14 x 14
+    x <- self$convolucao2(x)                # 32 mapas 14 x 14
+    x <- nnf_relu(x)
+    x <- nnf_max_pool2d(x, 2)               # 32 mapas 7 x 7
+    x <- torch_flatten(x, start_dim = 2)    # uma fila de 32 x 7 x 7 = 1568 números
+    x <- nnf_relu(self$densa(x))            # 64 números
+    x <- self$dropout(x)
+    self$saida(x)                           # 2 pontuações
   }
 )
 
@@ -129,10 +137,11 @@ historico <- data.frame()
 for (epoca in 1:10) {
   perdas <- c()
   coro::loop(for (lote in lotes) {
-    otimizador$zero_grad()
-    perda <- nnf_cross_entropy(modelo(lote[[1]]), lote[[2]])   # 1. palpite e erro
-    perda$backward()                                           # 2. quanto cada peso errou
-    otimizador$step()                                          # 3. ajusta os pesos
+    otimizador$zero_grad()                               # apaga os cálculos do lote anterior
+    previsao <- modelo(lote[[1]])                        # 1. palpite (lote[[1]]: as imagens)
+    perda <- nnf_cross_entropy(previsao, lote[[2]])      # 2. erro (lote[[2]]: os diagnósticos)
+    perda$backward()                                     # 3. direção de ajuste de cada peso
+    otimizador$step()                                    # 4. ajusta os pesos
     perdas <- c(perdas, perda$item())
   })
   p_val <- prob_pneumonia(validacao)

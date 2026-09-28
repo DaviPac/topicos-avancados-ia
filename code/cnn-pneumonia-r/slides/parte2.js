@@ -1,96 +1,156 @@
-// Slides 9-15: treino, dados, torch no R e o código.
-const { COR, FONTE, L, img, texto, titulo, cartao, destaque, codigo, seta } = require("./tema");
+// Slides 9-16: ReLU, pooling, o caminho pela rede, a saída e como a rede aprende.
+const { COR, FONTE, L, img, texto, titulo, cartao, destaque, paragrafos, grade, seta } = require("./tema");
 
-function comoAprende(pres) {
-  const s = pres.addSlide(); titulo(s, "Como a rede aprende");
-  const passos = [["1", "Palpite", "a rede vê um lote de raios-X e dá as notas"], ["2", "Erro", "compara com o diagnóstico real (entropia cruzada)"],
-    ["3", "Culpa", "calcula quanto cada peso contribuiu para o erro (backpropagation)"], ["4", "Ajuste", "move cada peso um pouco na direção certa (otimizador Adam)"]];
-  passos.forEach(([n, nome, desc], i) => {
-    const x = L.margem + i * 3.1;
-    cartao(pres, s, x, 1.7, 2.75, 3.1);
-    texto(s, n, { x: x + 0.25, y: 1.85, w: 1, h: 0.8, fontFace: FONTE.titulo, fontSize: 36, bold: true, color: COR.destaque });
-    texto(s, nome, { x: x + 0.25, y: 2.65, w: 2.3, h: 0.5, fontSize: 20, bold: true });
-    texto(s, desc, { x: x + 0.25, y: 3.2, w: 2.3, h: 1.5, fontSize: 14, color: COR.tintaFraca });
-    if (i < 3) seta(pres, s, x + 2.77, 3.1, 0.3);
+const rotulo = (s, t, x, y, w) => texto(s, t, { x, y, w, h: 0.4, fontSize: 14, color: COR.tintaFraca, align: "center" });
+
+function relu(pres) {
+  const s = pres.addSlide(); titulo(s, "ReLU: ficar só com o que o filtro encontrou");
+  s.addImage({ path: img("mapa_filtro.png"), x: L.margem, y: 1.5, w: 2.8, h: 2.8 });
+  seta(pres, s, 3.55, 2.72);
+  s.addImage({ path: img("mapa_relu.png"), x: 4.2, y: 1.5, w: 2.8, h: 2.8 });
+  rotulo(s, "mapa do filtro", L.margem, 4.35, 2.8); rotulo(s, "depois da ReLU", 4.2, 4.35, 2.8);
+  grade(pres, s, 1.0, 5.1, [[-3, 0, 2, 5]], 0.6, () => [COR.cartao, COR.tinta]);
+  texto(s, "→", { x: 3.45, y: 5.1, w: 0.6, h: 0.6, fontSize: 24, align: "center", valign: "middle" });
+  grade(pres, s, 4.1, 5.1, [[0, 0, 2, 5]], 0.6, (v) => [v > 0 ? "FAD3C2" : COR.cartao, COR.tinta]);
+  texto(s, "ReLU(x) = max(0, x)", { x: L.margem, y: 5.9, w: 6.4, h: 0.5, fontFace: FONTE.titulo, fontSize: 20, bold: true, align: "center" });
+  paragrafos(s, [
+    ["O que faz: ", "valores negativos viram zero; valores positivos passam sem mudança."],
+    ["Por que, 1: ", "no mapa, valor negativo quer dizer que o padrão do filtro não está ali. Zerando, sobra no mapa só onde o padrão foi encontrado (o laranja)."],
+    ["Por que, 2: ", "somas ponderadas empilhadas continuam sendo uma soma ponderada — sem a ReLU, a rede inteira seria uma grande regressão linear. A ReLU dobra essa reta e permite aprender relações complexas."],
+    ["Onde: ", "depois de cada convolução e depois da camada densa."],
+  ], { x: 7.4, y: 1.5, w: 5.33, h: 5.6, fontSize: 16, paraSpaceAfter: 12 });
+  s.addNotes("[7:45–8:45] Mostre o antes e depois: o azul some, fica só o laranja. Dois motivos para a ReLU. Primeiro, ela limpa o mapa: fica só onde o filtro achou o padrão. Segundo, e mais importante: se a rede só fizesse somas ponderadas, uma depois da outra, o resultado final ainda seria uma soma ponderada, uma regressão linear. A ReLU quebra essa linearidade e deixa a rede aprender relações mais complicadas.");
+}
+
+function pooling(pres) {
+  const s = pres.addSlide(); titulo(s, "Pooling: resumir o mapa pela metade");
+  const tons = ["CADCFC", "FAD3C2", "C8EBDD", "DDD8F4"];
+  const quadrante = (i, j) => tons[(i < 2 ? 0 : 2) + (j < 2 ? 0 : 1)];
+  grade(pres, s, L.margem, 1.5, [[1, 3, 2, 1], [4, 6, 5, 0], [3, 1, 1, 2], [0, 2, 7, 4]], 0.55, (v, i, j) => [quadrante(i, j), COR.tinta]);
+  seta(pres, s, 3.0, 2.4);
+  grade(pres, s, 3.7, 2.05, [[6, 5], [3, 7]], 0.55, (v, i, j) => [tons[i * 2 + j], COR.tinta]);
+  texto(s, "fica o maior de cada bloco 2 × 2", { x: 4.9, y: 2.05, w: 2.0, h: 1.1, fontSize: 14, color: COR.tintaFraca, valign: "middle" });
+  s.addImage({ path: img("mapa_relu.png"), x: L.margem, y: 4.05, w: 2.6, h: 2.6 });
+  seta(pres, s, 3.4, 5.18);
+  s.addImage({ path: img("mapa_pool.png"), x: 4.1, y: 4.7, w: 1.3, h: 1.3 });
+  rotulo(s, "28 × 28", L.margem, 6.7, 2.6); rotulo(s, "14 × 14", 3.85, 6.05, 1.8);
+  paragrafos(s, [
+    ["O que faz: ", "divide o mapa em blocos de 2 × 2 pixels e guarda só o maior valor de cada bloco."],
+    ["Resultado: ", "o mapa fica com metade da largura e metade da altura (um quarto dos números), mas os lugares onde o padrão foi encontrado continuam marcados."],
+    ["Por quê: ", "menos contas nas camadas seguintes, e um padrão deslocado um pixel para o lado dá quase o mesmo resultado."],
+    ["E depois? ", "O mapa reduzido é uma imagem menor. Ele vira a entrada da próxima convolução, que procura padrões nesses mapas."],
+  ], { x: 7.4, y: 1.5, w: 5.33, h: 5.6, fontSize: 16, paraSpaceAfter: 12 });
+  s.addNotes("[8:45–9:45] Pooling: de cada bloco de 2 por 2, fica o maior valor. O mapa encolhe pela metade em cada direção, mas o sinal forte continua lá — compare o mapa real de 28 por 28 com o de 14 por 14. E responda a dúvida natural: sim, o que sai daqui é uma imagem menor, que entra na próxima convolução.");
+}
+
+function jornada(pres) {
+  const s = pres.addSlide(); titulo(s, "A jornada de um raio-X pela rede");
+  const passos = [["raio-X", "1 imagem", "28 × 28"], ["convolução 1 + ReLU + pooling", "16 mapas", "14 × 14"], ["convolução 2 + ReLU + pooling", "32 mapas", "7 × 7"],
+    ["achatar", "1.568", "números"], ["camada densa + ReLU", "64", "números"], ["saída", "2", "pontuações"]];
+  passos.forEach(([nome, qtd, forma], i) => {
+    const x = L.margem + i * 2.07;
+    cartao(pres, s, x, 1.5, 1.75, 2.1, i === 5 ? "FAD3C2" : COR.cartao);
+    texto(s, nome, { x: x + 0.1, y: 1.6, w: 1.55, h: 0.75, fontSize: 13, color: COR.tintaFraca, align: "center", valign: "middle" });
+    texto(s, qtd, { x: x + 0.1, y: 2.4, w: 1.55, h: 0.55, fontSize: 20, bold: true, align: "center" });
+    texto(s, forma, { x: x + 0.1, y: 2.95, w: 1.55, h: 0.45, fontSize: 15, align: "center" });
+    if (i < 5) seta(pres, s, x + 1.77, 2.4, 0.28);
   });
-  texto(s, [
-    { text: "Lote: ", options: { bold: true } }, { text: "128 imagens de cada vez.   ", options: {} },
-    { text: "Época: ", options: { bold: true } }, { text: "passar pelas 4.708 imagens de treino uma vez (37 lotes). Treinamos 10 épocas.", options: {} },
-  ], { x: L.margem, y: 5.3, w: L.util, h: 1, fontSize: 17 });
-  s.addNotes("[10:00–11:30] O treino é esse ciclo repetido centenas de vezes: palpite, erro, descobrir a culpa de cada peso e ajustar. Cada volta melhora um pouco os filtros. No nosso caso: 37 lotes por época, 10 épocas, ou seja, 370 ajustes.");
+  paragrafos(s, [
+    ["Como ler “16 mapas 14 × 14”: ", "cada um dos 16 filtros gera um mapa; cada mapa tem 14 linhas e 14 colunas."],
+    ["De onde vêm 16 e 32: ", "é quem monta a rede que escolhe quantos filtros cada convolução tem."],
+    ["28 → 14 → 7: ", "cada pooling corta o tamanho pela metade."],
+    ["Do simples ao complexo: ", "os filtros da 2ª convolução olham os 16 mapas da 1ª ao mesmo tempo. Assim, combinam padrões simples (bordas) em padrões mais complexos (formas, texturas)."],
+    ["1.568 = 32 × 7 × 7: ", "todos os números dos 32 mapas, postos em fila."],
+  ], { x: L.margem, y: 3.95, w: L.util, h: 3.2, fontSize: 16, paraSpaceAfter: 8 });
+  s.addNotes("[9:45–10:45] Junte as peças e siga um raio-X. Entra 1 imagem de 28 por 28. A primeira convolução gera 16 mapas; o pooling os reduz para 14 por 14. A segunda convolução gera 32 mapas, reduzidos para 7 por 7. Aí começa a parte 2: achatar, camada densa e saída. Explique cada número: 16 e 32 são escolhas; 14 e 7 vêm do pooling; 1.568 é 32 vezes 7 vezes 7.");
+}
+
+function achatarDensa(pres) {
+  const s = pres.addSlide(); titulo(s, "Achatar e camada densa");
+  [["Achatar", "A camada densa recebe uma lista de números, não uma grade. Achatar é enfileirar os 32 mapas de 7 × 7 numa única fila de 1.568 números — como transformar cada imagem numa linha de tabela com 1.568 colunas."],
+    ["Camada densa", "64 neurônios iguais ao do começo da aula: cada um faz uma soma ponderada dos 1.568 números, seguida de ReLU. Cada neurônio combina vários padrões encontrados num único número. O 64 é outra escolha de quem monta a rede."],
+  ].forEach(([nome, desc], i) => {
+    const x = L.margem + i * 6.23;
+    cartao(pres, s, x, 1.5, 5.9, 5.4);
+    texto(s, nome, { x: x + 0.3, y: 1.7, w: 5.3, h: 0.5, fontFace: FONTE.titulo, fontSize: 24, bold: true, color: COR.destaque });
+    texto(s, desc, { x: x + 0.3, y: 5.0, w: 5.3, h: 1.8, fontSize: 16 });
+  });
+  const cores = (v) => [["CADCFC", "FAD3C2", "C8EBDD"][Math.floor((v - 1) / 3)], COR.tinta];
+  grade(pres, s, 1.0, 2.5, [[1, 2, 3], [4, 5, 6], [7, 8, 9]], 0.5, cores);
+  seta(pres, s, 2.65, 3.1, 0.4);
+  grade(pres, s, 3.2, 3.05, [[1, 2, 3, 4, 5, 6, 7, 8, 9]], 0.36, cores);
+  const ys = [2.5, 3.2, 3.9];
+  ys.forEach((y) => s.addShape(pres.shapes.OVAL, { x: 7.3, y, w: 0.45, h: 0.45, fill: { color: COR.branco }, line: { color: COR.tintaFraca } }));
+  [2.85, 3.55].forEach((y) => s.addShape(pres.shapes.OVAL, { x: 10.3, y, w: 0.45, h: 0.45, fill: { color: "FAD3C2" }, line: { color: COR.destaque } }));
+  ys.forEach((y1) => [2.85, 3.55].forEach((y2) => s.addShape(pres.shapes.LINE, Object.assign(
+    { x: 7.75, y: Math.min(y1, y2) + 0.22, w: 2.55, h: Math.abs(y2 - y1), line: { color: COR.grade, width: 1 } }, y2 < y1 ? { flipV: true } : {}))));
+  texto(s, "cada neurônio recebe todas as entradas", { x: 7.1, y: 4.45, w: 5.4, h: 0.4, fontSize: 13, color: COR.tintaFraca, align: "right" });
+  s.addNotes("[10:45–11:45] Achatar: a camada densa trabalha com uma lista, então os 32 mapas são postos em fila — 1.568 números, como uma linha de uma tabela. Camada densa: são 64 neurônios, cada um uma soma ponderada de todos os 1.568 números. É aqui que os padrões encontrados na parte 1 são combinados para chegar à decisão.");
+}
+
+function saida(pres) {
+  const s = pres.addSlide(); titulo(s, "A saída: 2 pontuações que viram probabilidades");
+  const cards = [["saída da rede: pontuações", "1,2  ·  3,1", "normal · pneumonia", COR.tinta], ["depois do softmax", "13%  ·  87%", "normal · pneumonia", COR.destaque],
+    ["diagnóstico", "pneumonia", "a classe de maior probabilidade", COR.tinta]];
+  cards.forEach(([cima, meio, baixo, cor], i) => {
+    const x = L.margem + i * 4.2;
+    cartao(pres, s, x, 1.5, 3.7, 2.2);
+    texto(s, cima, { x: x + 0.3, y: 1.65, w: 3.1, h: 0.4, fontSize: 14, color: COR.tintaFraca });
+    texto(s, meio, { x: x + 0.3, y: 2.1, w: 3.1, h: 0.9, fontFace: FONTE.titulo, fontSize: 32, bold: true, color: cor, valign: "middle" });
+    texto(s, baixo, { x: x + 0.3, y: 3.05, w: 3.1, h: 0.4, fontSize: 14, color: COR.tintaFraca });
+    if (i < 2) seta(pres, s, x + 3.75, 2.45, 0.4);
+  });
+  paragrafos(s, [
+    ["Pontuação: ", "a última camada tem 2 neurônios, um para cada classe. Cada um dá um número qualquer (pode ser negativo, pode ser 50): quanto maior, mais a imagem se parece com aquela classe."],
+    ["Softmax: ", "transforma as pontuações em probabilidades que somam 100%.  p(pneumonia) = e^3,1 / (e^1,2 + e^3,1) = 0,87."],
+    ["Com 2 classes, ", "o softmax é a mesma função logística da regressão logística."],
+    ["Decisão: ", "a classe de maior probabilidade — o mesmo que cortar em 50%."],
+  ], { x: L.margem, y: 4.1, w: L.util, h: 3.0, fontSize: 17, paraSpaceAfter: 10 });
+  s.addNotes("[11:45–12:45] A rede termina com dois números, as pontuações — uma para normal, outra para pneumonia. Sozinhas elas não são probabilidades. O softmax as converte: eleva e a cada pontuação e divide pelo total; aqui dá 13% e 87%. Quem conhece regressão logística: com duas classes é a mesma função logística. A resposta final é a classe mais provável.");
+}
+
+function entropia(pres) {
+  const s = pres.addSlide(); titulo(s, "Como medir o erro: entropia cruzada");
+  texto(s, "perda = − log(probabilidade dada à classe certa)", { x: L.margem, y: 1.45, w: L.util, h: 0.7, fontFace: FONTE.titulo, fontSize: 26, bold: true, color: COR.destaque });
+  const c = (t, o = {}) => ({ text: t, options: Object.assign({ valign: "middle" }, o) });
+  s.addTable([
+    [c("Raio-X com pneumonia. A rede deu à pneumonia…", { bold: true }), c("perda", { bold: true, align: "right" }), c("leitura", { bold: true })],
+    [c("90%"), c("0,11", { align: "right" }), c("previsão certa e segura: erro pequeno")],
+    [c("50%"), c("0,69", { align: "right" }), c("meio a meio: erro médio")],
+    [c("10%"), c("2,30", { align: "right", bold: true, color: COR.destaque }), c("previsão errada com alta probabilidade: erro grande")],
+  ], { x: L.margem, y: 2.35, w: L.util, colW: [4.9, 1.4, 5.83], rowH: 0.55, fontFace: FONTE.corpo, fontSize: 16, border: { type: "solid", color: COR.grade, pt: 1 } });
+  paragrafos(s, [
+    ["Para que serve: ", "para aprender, a rede precisa de um único número que diga o quanto ela errou. É esse número que o treino tenta diminuir."],
+    ["Como funciona: ", "quanto menor a probabilidade dada à classe certa, maior a perda. Errar com alta probabilidade custa muito mais do que errar por pouco."],
+    ["No lote: ", "a perda é a média das perdas de cada imagem."],
+    ["Parente conhecido: ", "é o mesmo critério da regressão logística. Na regressão linear, o papel é da soma dos quadrados dos erros."],
+  ], { x: L.margem, y: 4.8, w: L.util, h: 2.4, fontSize: 16, paraSpaceAfter: 6 });
+  s.addNotes("[12:45–13:45] Para aprender, a rede precisa medir o erro. Na classificação, a medida é a entropia cruzada: o menos logaritmo da probabilidade que a rede deu à classe correta. Leia a tabela: 90% na classe certa, perda baixa; 10%, perda alta. Faça a ponte com a regressão linear, onde o erro é medido pela soma dos quadrados.");
+}
+
+function descida(pres) {
+  const s = pres.addSlide(); titulo(s, "Como a rede aprende: descendo a curva do erro");
+  s.addImage({ path: img("descida.png"), x: L.margem, y: 1.4, w: 5.6, h: 5.6 * 800 / 1100 });
+  const passos = [["1  Palpite: ", "a rede calcula as probabilidades para um lote de imagens."], ["2  Erro: ", "a entropia cruzada mede o quanto errou."],
+    ["3  Backpropagation: ", "calcula, para cada peso, a inclinação da curva do erro: aumentar esse peso faz o erro subir ou descer? O cálculo começa na saída e volta até os filtros — daí o nome."],
+    ["4  Adam: ", "dá o passo: muda cada peso um pouco no sentido que diminui o erro. É uma versão da descida do gradiente que ajusta sozinha o tamanho do passo de cada peso."]];
+  paragrafos(s, passos, { x: 6.7, y: 1.4, w: 6.03, h: 4.4, fontSize: 15, paraSpaceAfter: 10 });
+  cartao(pres, s, L.margem, 5.7, L.util, 1.35);
+  paragrafos(s, [["Lote: ", "128 imagens por vez.   "], ["Época: ", "uma passada por todas as 4.708 imagens de treino = 37 lotes. Com 10 épocas, os pesos são ajustados 370 vezes, sempre repetindo 1 → 2 → 3 → 4."]],
+    { x: L.margem + 0.3, y: 5.85, w: L.util - 0.6, h: 1.1, fontSize: 15, paraSpaceAfter: 2 });
+  s.addNotes("[13:45–15:00] Imagine a curva do erro em função de um peso. O peso começa sorteado, em algum ponto da curva. A backpropagation calcula a inclinação ali — se a curva desce para a direita, o peso deve aumentar. O Adam dá um passo nessa direção. Repetindo, o peso chega perto do menor erro. A rede faz isso ao mesmo tempo para seus 105 mil pesos, inclusive os números dos filtros. É assim que os filtros são aprendidos.");
 }
 
 function divisao(pres) {
   const s = pres.addSlide(); titulo(s, "Treino, validação e teste — e o risco de decorar");
-  const partes = [["4.708", "treino: a rede aprende com essas"], ["524", "validação: acompanha o progresso a cada época"], ["624", "teste: a prova final, com imagens que a rede nunca viu"]];
-  partes.forEach(([n, leg], i) => destaque(pres, s, L.margem + i * 4.165, 1.6, 3.8, 2.4, n, leg, { tamanho: 40, corNumero: i === 2 ? COR.destaque : COR.tinta }));
-  cartao(pres, s, L.margem, 4.4, L.util, 2.4);
-  texto(s, [
-    { text: "Overfitting: ", options: { bold: true } }, { text: "a rede decora o treino em vez de aprender o padrão — vai bem nas imagens que já viu e mal nas novas.", options: { breakLine: true } },
-    { text: "Dropout: ", options: { bold: true } }, { text: "durante o treino, desliga 30% dos neurônios ao acaso. A rede não pode depender de poucos caminhos e generaliza melhor.", options: {} },
-  ], { x: L.margem + 0.3, y: 4.65, w: L.util - 0.6, h: 2, fontSize: 17, paraSpaceAfter: 10 });
-  s.addNotes("[11:30–12:45] Analogia: treino são os exercícios resolvidos, validação é o simulado e teste é a prova. Se medíssemos a nota no treino, seria como dar ao aluno a prova que ele usou para estudar. O dropout é uma defesa contra decorar.");
+  const partes = [["4.708", "treino: imagens usadas para ajustar os pesos"], ["524", "validação: conferir o progresso a cada época, sem ajustar nada"], ["624", "teste: a avaliação final, com imagens que a rede nunca viu"]];
+  partes.forEach(([n, leg], i) => destaque(pres, s, L.margem + i * 4.165, 1.5, 3.8, 2.3, n, leg, { tamanho: 40, corNumero: i === 2 ? COR.destaque : COR.tinta }));
+  cartao(pres, s, L.margem, 4.2, L.util, 2.7);
+  paragrafos(s, [
+    ["Overfitting: ", "a rede decora as imagens de treino em vez de aprender o padrão — vai bem nelas e mal nas novas. Por isso a nota que vale é a do teste."],
+    ["Dropout: ", "durante o treino, a cada lote, 30% dos neurônios da camada densa são desligados ao acaso. A rede não pode depender de poucos neurônios e generaliza melhor. Na hora de avaliar, todos voltam a funcionar."],
+  ], { x: L.margem + 0.3, y: 4.45, w: L.util - 0.6, h: 2.3, fontSize: 17, paraSpaceAfter: 12 });
+  s.addNotes("[15:00–15:45] Analogia: treino são os exercícios resolvidos, validação é o simulado, teste é a prova. Medir a nota no treino seria dar ao aluno a prova que ele usou para estudar. O dropout é uma defesa contra decorar.");
 }
 
-function dados(pres) {
-  const s = pres.addSlide(); titulo(s, "Os dados: PneumoniaMNIST");
-  s.addImage({ path: img("amostras.png"), x: L.margem, y: 1.35, w: 8.5, h: 8.5 * 640 / 1500 });
-  texto(s, "Figura gerada pelo próprio script em R.", { x: L.margem, y: 5.05, w: 8.5, h: 0.4, fontSize: 12, color: COR.tintaFraca, italic: true });
-  destaque(pres, s, 9.4, 1.35, 3.33, 1.9, "5.856", "raios-X de tórax de crianças, reduzidos para 28 × 28", { tamanho: 36 });
-  destaque(pres, s, 9.4, 3.45, 3.33, 1.9, "74%", "das imagens de treino são de pneumonia (3.494 × 1.214)", { tamanho: 36, corNumero: COR.destaque });
-  texto(s, "Fonte: Kermany et al., Cell (2018); padronizado pelo MedMNIST v2 — Yang et al., Scientific Data (2023).",
-    { x: L.margem, y: 5.8, w: L.util, h: 0.8, fontSize: 14, color: COR.tintaFraca });
-  s.addNotes("[12:45–14:00] Apresente a base: radiografias reais de crianças, com diagnóstico normal ou pneumonia. Destaque o desbalanceamento: 74% pneumonia. Guarde esse número, ele volta nos resultados.");
-}
-
-function adivinhe(pres) {
-  const s = pres.addSlide(); titulo(s, "Sua vez: normal ou pneumonia?");
-  [["A", "adivinhe_7.png"], ["B", "adivinhe_10.png"]].forEach(([letra, arq], i) => {
-    const x = 2.0 + i * 5.0;
-    s.addImage({ path: img(arq), x, y: 1.5, w: 4.2, h: 4.2 });
-    texto(s, letra, { x, y: 5.8, w: 4.2, h: 0.7, fontFace: FONTE.titulo, fontSize: 32, bold: true, align: "center" });
-  });
-  s.addNotes("[14:00–14:45] Momento de interação: peça para quem assiste pausar e tentar adivinhar. Resposta: A é PNEUMONIA, B é NORMAL (no pulmão normal os campos pulmonares ficam mais escuros e nítidos). Comente: nem sempre é óbvio em 28 × 28 — é aí que a rede ajuda.");
-}
-
-function torchNoR(pres) {
-  const s = pres.addSlide(); titulo(s, "A ferramenta: torch no R");
-  texto(s, [
-    { text: "Pacote do projeto mlverse que traz para o R o mesmo motor de deep learning do PyTorch (a biblioteca libtorch, em C++).", options: { bullet: true, breakLine: true } },
-    { text: "Não precisa de Python.", options: { bullet: true, bold: true, breakLine: true } },
-    { text: "Blocos que vamos usar: nn_conv2d, nnf_relu, nnf_max_pool2d, nn_linear, nn_dropout, optim_adam, dataloader.", options: { bullet: true } },
-  ], { x: L.margem, y: 1.6, w: 6.2, h: 4.5, fontSize: 18, paraSpaceAfter: 14 });
-  codigo(pres, s, ["# instalação (só uma vez)", "install.packages(\"torch\")", "library(torch)", "install_torch()", "", "# teste", "torch_randn(2, 3)"], 7.2, 1.6, 5.53, 3.6, 16);
-  s.addNotes("[14:45–15:45] O torch do R é uma das novidades do ecossistema R para ciência de dados — é o tipo de ferramenta que o projeto pede. Mostre que a instalação são três linhas e que funciona sem Python.");
-}
-
-function arquiteturaCodigo(pres) {
-  const s = pres.addSlide(); titulo(s, "A CNN no código");
-  codigo(pres, s, [
-    "CNN <- nn_module(\"CNNSimples\",", "  initialize = function() {",
-    "    self$conv1 <- nn_conv2d(1, 16, 3, padding = 1)", "    self$conv2 <- nn_conv2d(16, 32, 3, padding = 1)",
-    "    self$fc1 <- nn_linear(32 * 7 * 7, 64)", "    self$fc2 <- nn_linear(64, 2)", "    self$drop <- nn_dropout(0.3)", "  },",
-    "  forward = function(x) {", "    x <- nnf_max_pool2d(nnf_relu(self$conv1(x)), 2)", "    x <- nnf_max_pool2d(nnf_relu(self$conv2(x)), 2)",
-    "    x <- torch_flatten(x, start_dim = 2)", "    x <- self$drop(nnf_relu(self$fc1(x)))", "    self$fc2(x)", "  })"], L.margem, 1.45, 7.6, 5.5, 15);
-  s.addTable([
-    [{ text: "Camada", options: { bold: true } }, { text: "Pesos", options: { bold: true, align: "right" } }],
-    ["conv1", { text: "160", options: { align: "right" } }], ["conv2", { text: "4.640", options: { align: "right" } }],
-    ["fc1", { text: "100.416", options: { align: "right", bold: true, color: COR.destaque } }], ["fc2", { text: "130", options: { align: "right" } }],
-    [{ text: "total", options: { bold: true } }, { text: "105.346", options: { bold: true, align: "right" } }],
-  ], { x: 8.6, y: 1.45, w: 4.13, colW: [2.2, 1.93], fontFace: FONTE.corpo, fontSize: 16, border: { type: "solid", color: COR.grade, pt: 1 }, rowH: 0.45 });
-  texto(s, "95% dos pesos estão na camada densa fc1 — os filtros convolucionais são baratos.", { x: 8.6, y: 4.4, w: 4.13, h: 1.3, fontSize: 15 });
-  s.addNotes("[15:45–17:00] Mapeie o código na teoria: duas convoluções com ReLU e pooling, achatar, camada densa com dropout, saída com 2 notas. Mostre a tabela: os filtros têm poucos pesos; quase tudo está na camada densa. Conta da conv1: 16 filtros × 9 pesos + 16 = 160.");
-}
-
-function treinoCodigo(pres) {
-  const s = pres.addSlide(); titulo(s, "O treino no código");
-  codigo(pres, s, [
-    "otimizador <- optim_adam(modelo$parameters, lr = 0.001)", "", "for (epoca in 1:10) {", "  coro::loop(for (lote in lotes) {",
-    "    otimizador$zero_grad()", "    perda <- nnf_cross_entropy(modelo(lote[[1]]), lote[[2]])  # palpite e erro",
-    "    perda$backward()                                          # culpa de cada peso", "    otimizador$step()                                         # ajuste",
-    "  })", "}"], L.margem, 1.5, L.util, 4.2, 15);
-  texto(s, "As quatro etapas da teoria viram quatro linhas de código.", { x: L.margem, y: 6.0, w: L.util, h: 0.6, fontFace: FONTE.titulo, fontSize: 22, italic: true });
-  s.addNotes("[17:00–18:00] Ligue cada linha ao ciclo 'palpite, erro, culpa, ajuste'. Detalhe do R: no torch do R as classes começam em 1, não em 0 — por isso somamos 1 aos rótulos na preparação dos dados.");
-}
-
-module.exports = { comoAprende, divisao, dados, adivinhe, torchNoR, arquiteturaCodigo, treinoCodigo };
+module.exports = { relu, pooling, jornada, achatarDensa, saida, entropia, descida, divisao };

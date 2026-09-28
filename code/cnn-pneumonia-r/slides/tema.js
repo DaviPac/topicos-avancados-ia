@@ -50,6 +50,23 @@ function codigo(pres, s, linhas, x, y, w, h, tamanho = 13) {
     { x: x + 0.3, y: y + 0.25, w: w - 0.6, h: h - 0.5, fontFace: FONTE.codigo, fontSize: tamanho });
 }
 
+// Código à esquerda e, na mesma linha, a explicação em português à direita.
+// pares: [codigo, explicacao, linhasDeAltura=1]
+function codigoExplicado(pres, s, pares, o = {}) {
+  const y0 = o.y || 1.5, wc = o.wCodigo || 7.2, h = o.altura || 0.46;
+  const xe = L.margem + wc + 0.3, we = L.largura - L.margem - xe;
+  const alturas = pares.map((p) => h * (p[2] || 1));
+  cartao(pres, s, L.margem, y0, wc, alturas.reduce((a, b) => a + b, 0) + 0.3, COR.codigo);
+  let y = y0 + 0.15;
+  pares.forEach(([cod, expl], i) => {
+    texto(s, cod, { x: L.margem + 0.25, y, w: wc - 0.4, h: alturas[i], fontFace: FONTE.codigo,
+      fontSize: o.tamCodigo || 12, color: COR.branco, valign: "middle" });
+    if (expl) texto(s, expl, { x: xe, y, w: we, h: alturas[i], fontSize: o.tamTexto || 14, valign: "middle" });
+    if (expl && i < pares.length - 1) s.addShape(pres.shapes.LINE, { x: xe, y: y + alturas[i], w: we, h: 0, line: { color: COR.grade, width: 0.75 } });
+    y += alturas[i];
+  });
+}
+
 // Grade de números desenhada célula a célula (pixels, filtros, pooling)
 function grade(pres, s, x, y, valores, lado, corDe) {
   valores.forEach((linha, i) => linha.forEach((v, j) => {
@@ -71,4 +88,15 @@ function seta(pres, s, x, y, w = 0.5) {
   s.addShape(pres.shapes.RIGHT_ARROW, { x, y, w, h: 0.35, fill: { color: COR.tintaFraca }, line: { color: COR.tintaFraca } });
 }
 
-module.exports = { COR, FONTE, L, img, texto, titulo, cartao, destaque, codigo, grade, cinza, seta };
+// Lista de parágrafos: cada item é uma string ou [negrito, resto]
+function paragrafos(s, itens, o) {
+  const partes = [];
+  itens.forEach((item, i) => {
+    const fim = { breakLine: i < itens.length - 1 };
+    if (typeof item === "string") partes.push({ text: item, options: fim });
+    else partes.push({ text: item[0], options: { bold: true } }, { text: item[1], options: fim });
+  });
+  texto(s, partes, Object.assign({ paraSpaceAfter: 10 }, o));
+}
+
+module.exports = { COR, FONTE, L, img, texto, titulo, cartao, destaque, codigo, codigoExplicado, paragrafos, grade, cinza, seta };
