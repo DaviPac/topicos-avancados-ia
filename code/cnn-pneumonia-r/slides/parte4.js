@@ -13,7 +13,7 @@ function pratica(pres) {
     texto(s, nome, { x: x + 0.25, y: y + 0.2, w: 2.4, h: 0.5, fontSize: 20, bold: true, color: COR.branco });
     texto(s, desc, { x: x + 0.25, y: y + 0.75, w: 2.4, h: 0.75, fontSize: 14, color: COR.sobreEscuro });
   });
-  s.addNotes("[22:00–26:00] PRÁTICA NO RSTUDIO (câmera opcional aqui). Rode seção por seção e comente o que aparece. Seção 3: os 10 raios-X e a contagem 1214 normal × 3494 pneumonia. Seção 5: a rede impressa e o total de 105.346 pesos. Seção 6: a cada época, a perda cai e a AUC da validação sobe. Seção 7: acurácia, AUC e matriz de confusão do teste. Seção 8: a rede dando a probabilidade de pneumonia de raios-X que ela nunca viu.");
+  s.addNotes("[21:50–25:20] PRÁTICA NO RSTUDIO (câmera opcional aqui). Rode seção por seção e comente o que aparece. Seção 3: os 10 raios-X e a contagem 1214 normal × 3494 pneumonia. Seção 5: a rede impressa e o total de 105.346 pesos. Seção 6: a cada época, a perda cai e a AUC da validação sobe. Seção 7: acurácia, AUC e matriz de confusão do teste. Seção 8: a rede dando a probabilidade de pneumonia de raios-X que ela nunca viu.");
 }
 
 function resultados(pres) {
@@ -32,7 +32,7 @@ function resultados(pres) {
   destaque(pres, s, 8.4, 1.5, 4.33, 1.7, "86,9%", "acurácia: 542 acertos em 624", { tamanho: 32 });
   destaque(pres, s, 8.4, 3.35, 4.33, 1.7, "98,5%", "sensibilidade: das 390 pneumonias, 384 detectadas", { tamanho: 32 });
   destaque(pres, s, 8.4, 5.2, 4.33, 1.7, "67,5%", "especificidade: dos 234 normais, 158 reconhecidos", { tamanho: 32, corNumero: COR.destaque });
-  s.addNotes("[26:00–27:00] Leia a matriz: a diagonal são os acertos. A rede quase não deixa passar pneumonia — só 6 em 390 —, mas dá alarme falso em 76 das 234 crianças saudáveis. Se a execução da gravação der números um pouco diferentes, leia os da tela.");
+  s.addNotes("[25:20–26:15] Leia a matriz: a diagonal são os acertos. A rede quase não deixa passar pneumonia — só 6 em 390 —, mas dá alarme falso em 76 das 234 crianças saudáveis. Se a execução da gravação der números um pouco diferentes, leia os da tela.");
 }
 
 function licoes(pres) {
@@ -47,7 +47,7 @@ function licoes(pres) {
     texto(s, nome, { x: x + 0.3, y: 1.75, w: 5.3, h: 0.9, fontFace: FONTE.titulo, fontSize: 22, bold: true });
     texto(s, desc, { x: x + 0.3, y: 2.8, w: 5.3, h: 3.9, fontSize: 17 });
   });
-  s.addNotes("[27:00–28:00] Duas lições. A primeira: a rede não tem opinião; ela aprendeu a diminuir o erro médio num treino em que a maioria é pneumonia, e isso a empurra para esse lado. A segunda: a probabilidade é da rede, mas o corte é uma decisão de quem usa o modelo, e depende do custo de cada tipo de erro.");
+  s.addNotes("[26:15–27:10] Duas lições. A primeira: a rede não tem opinião; ela aprendeu a diminuir o erro médio num treino em que a maioria é pneumonia, e isso a empurra para esse lado. A segunda: a probabilidade é da rede, mas o corte é uma decisão de quem usa o modelo, e depende do custo de cada tipo de erro.");
 }
 
 function exercicios(pres) {
@@ -67,7 +67,7 @@ function exercicios(pres) {
     texto(s, cod, { x: x + 0.45, y: y + 1.3, w: 5.0, h: 0.75, fontFace: FONTE.codigo, fontSize: 12, color: COR.branco, valign: "middle" });
     texto(s, pergunta, { x: x + 0.3, y: y + 2.1, w: 5.3, h: 0.6, fontSize: 13, italic: true });
   });
-  s.addNotes("[28:00–29:15] Proponha os exercícios, do mais fácil ao mais difícil. Dica do 1: é a troca entre sensibilidade e especificidade. Os pesos do 2 são o inverso da frequência de cada classe no treino: 4708 / (2 × 1214) = 1,94 e 4708 / (2 × 3494) = 0,67.");
+  s.addNotes("[27:10–28:15] Proponha os exercícios, do mais fácil ao mais difícil. Dica do 1: é a troca entre sensibilidade e especificidade. Os pesos do 2 são o inverso da frequência de cada classe no treino: 4708 / (2 × 1214) = 1,94 e 4708 / (2 × 3494) = 0,67.");
 }
 
 function encerramento(pres) {
@@ -86,7 +86,7 @@ function encerramento(pres) {
     { text: "Kermany et al. Identifying medical diagnoses and treatable diseases by image-based deep learning. Cell 172(5), 2018.", options: { breakLine: true } },
     { text: "Yang et al. MedMNIST v2. Scientific Data 10, 41, 2023.  ·  Pacote torch para R: torch.mlverse.org", options: {} },
   ], { x: L.margem, y: 4.7, w: L.util, h: 2.3, fontSize: 13, color: COR.sobreEscuro });
-  s.addNotes("[29:15–29:45] Feche com o resumo e agradeça.");
+  s.addNotes("[28:15–28:40] Feche com o resumo e agradeça.");
 }
 
 module.exports = { pratica, resultados, licoes, exercicios, encerramento };

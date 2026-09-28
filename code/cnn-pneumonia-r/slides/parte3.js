@@ -12,7 +12,7 @@ function dados(pres) {
     ["Faz parte do MedMNIST v2 ", "(Yang et al., Scientific Data, 2023), uma coleção de bases de imagens médicas preparadas para ensino e pesquisa: todas as imagens reduzidas para 28 × 28 pixels, já divididas em treino, validação e teste, num único arquivo .npz."],
     ["O nome ", "vem do MNIST, uma base famosa de dígitos escritos à mão, também com imagens de 28 × 28."],
   ], { x: L.margem, y: 5.25, w: L.util, h: 2.0, fontSize: 15, paraSpaceAfter: 6 });
-  s.addNotes("[15:45–16:30] Apresente a base: radiografias reais de crianças, com o diagnóstico. Explique o nome: PneumoniaMNIST é a parte de pneumonia do MedMNIST, uma coleção que deixa todas as imagens no mesmo formato, pequenas e já divididas. Destaque o desequilíbrio: 74% pneumonia. Esse número volta nos resultados.");
+  s.addNotes("[15:55–16:40] Apresente a base: radiografias reais de crianças, com o diagnóstico. Explique o nome: PneumoniaMNIST é a parte de pneumonia do MedMNIST, uma coleção que deixa todas as imagens no mesmo formato, pequenas e já divididas. Destaque o desequilíbrio: 74% pneumonia. Esse número volta nos resultados.");
 }
 
 function adivinhe(pres) {
@@ -22,7 +22,7 @@ function adivinhe(pres) {
     s.addImage({ path: img(arq), x, y: 1.5, w: 4.2, h: 4.2 });
     texto(s, letra, { x, y: 5.8, w: 4.2, h: 0.7, fontFace: FONTE.titulo, fontSize: 32, bold: true, align: "center" });
   });
-  s.addNotes("[16:30–17:00] Peça para quem assiste pausar o vídeo e tentar. Resposta: A é PNEUMONIA, B é NORMAL — no pulmão normal os campos pulmonares ficam mais escuros e nítidos; na pneumonia aparecem regiões mais claras e opacas. Em 28 × 28 nem sempre é fácil: é esse padrão que a rede precisa aprender.");
+  s.addNotes("[16:40–17:10] Peça para quem assiste pausar o vídeo e tentar. Resposta: A é PNEUMONIA, B é NORMAL — no pulmão normal os campos pulmonares ficam mais escuros e nítidos; na pneumonia aparecem regiões mais claras e opacas. Em 28 × 28 nem sempre é fácil: é esse padrão que a rede precisa aprender.");
 }
 
 function torch(pres) {
@@ -35,7 +35,7 @@ function torch(pres) {
   ], { x: L.margem, y: 1.5, w: 6.4, h: 5.3, fontSize: 18, paraSpaceAfter: 14 });
   codigo(pres, s, ["# instalar (só uma vez)", "install.packages(\"torch\")", "library(torch)", "install_torch()", "",
     "# teste: tensor 2 x 3 sorteado", "torch_randn(2, 3)"], 7.4, 1.5, 5.33, 3.6, 15);
-  s.addNotes("[17:00–17:45] O torch é o pacote que traz redes neurais para o R. O conceito novo é o tensor, que é só um array de várias dimensões — a turma já conhece array no R. Mostre a instalação: três linhas, uma vez só.");
+  s.addNotes("[17:10–17:50] O torch é o pacote que traz redes neurais para o R. O conceito novo é o tensor, que é só um array de várias dimensões — a turma já conhece array no R. Mostre a instalação: três linhas, uma vez só.");
 }
 
 function traducao(pres) {
@@ -50,7 +50,7 @@ function traducao(pres) {
   { x: L.margem, y: 1.4, w: L.util, colW: [3.0, 3.8, 5.33], rowH: 0.45, fontFace: FONTE.corpo, fontSize: 16, valign: "middle", border: { type: "solid", color: COR.grade, pt: 1 } });
   paragrafos(s, [["Padrão dos nomes: ", "nn_ cria uma peça que fica guardada dentro da rede; nnf_ é uma função aplicada direto aos dados."]],
     { x: L.margem, y: 6.2, w: L.util, h: 0.6, fontSize: 15 });
-  s.addNotes("[17:45–18:30] Este slide é a ponte entre a teoria e o código: cada conceito visto até aqui tem uma função no torch. Não precisa decorar — é só para reconhecer as funções quando elas aparecerem no código.");
+  s.addNotes("[17:50–18:30] Este slide é a ponte entre a teoria e o código: cada conceito visto até aqui tem uma função no torch. Não precisa decorar — é só para reconhecer as funções quando elas aparecerem no código.");
 }
 
 function prepararCodigo(pres) {
@@ -80,7 +80,7 @@ function redePecas(pres) {
     ["  self$dropout <- nn_dropout(0.3)", "dropout: desliga 30% ao acaso no treino"],
   ], { y: 1.95, wCodigo: 5.9, altura: 0.46, tamTexto: 15 });
   texto(s, "Ao todo, 105.346 pesos a aprender — 95% deles na camada densa.", { x: L.margem, y: 6.65, w: L.util, h: 0.45, fontFace: FONTE.titulo, fontSize: 18, italic: true });
-  s.addNotes("[19:15–20:15] Mapeie cada linha na teoria. Os números das convoluções são entradas e saídas: 1 imagem entra, 16 mapas saem; 16 entram, 32 saem. Na camada densa, 32 × 7 × 7 é exatamente o 1.568 da jornada. A rede tem 105 mil pesos — o script em R imprime esse total.");
+  s.addNotes("[19:15–20:10] Mapeie cada linha na teoria. Os números das convoluções são entradas e saídas: 1 imagem entra, 16 mapas saem; 16 entram, 32 saem. Na camada densa, 32 × 7 × 7 é exatamente o 1.568 da jornada. A rede tem 105 mil pesos — o script em R imprime esse total.");
 }
 
 function redeCaminho(pres) {
@@ -94,7 +94,7 @@ function redeCaminho(pres) {
     ["x <- nnf_relu(self$densa(x))", "camada densa + ReLU: 64 números"], ["x <- self$dropout(x)", "dropout"],
     ["self$saida(x)", "saída: 2 pontuações, o resultado final"],
   ], { y: 1.9, wCodigo: 5.2, altura: 0.47, tamCodigo: 14, tamTexto: 15 });
-  s.addNotes("[20:15–21:00] Uma linha para cada peça, na ordem da jornada. Chame atenção para o x: ele é reescrito a cada linha, então cada passo recebe o resultado do anterior. O softmax não está aqui: ele é aplicado depois, na hora de calcular as probabilidades.");
+  s.addNotes("[20:10–20:55] Uma linha para cada peça, na ordem da jornada. Chame atenção para o x: ele é reescrito a cada linha, então cada passo recebe o resultado do anterior. O softmax não está aqui: ele é aplicado depois, na hora de calcular as probabilidades.");
 }
 
 function treinoCodigo(pres) {
@@ -110,7 +110,7 @@ function treinoCodigo(pres) {
     ["    otimizador$step()", "4. Adam: cada peso dá um passo"],
     ["  })\n}", "", 1.4],
   ], { y: 1.4, wCodigo: 6.6, altura: 0.5, tamCodigo: 13, tamTexto: 15 });
-  s.addNotes("[21:00–22:00] Ligue cada linha aos quatro passos: palpite, erro, backpropagation e Adam. lote[[1]] são as imagens do lote e lote[[2]] os diagnósticos. O zero_grad existe porque o torch acumula as inclinações; é preciso zerar antes de cada lote.");
+  s.addNotes("[20:55–21:50] Ligue cada linha aos quatro passos: palpite, erro, backpropagation e Adam. lote[[1]] são as imagens do lote e lote[[2]] os diagnósticos. O zero_grad existe porque o torch acumula as inclinações; é preciso zerar antes de cada lote.");
 }
 
 module.exports = { dados, adivinhe, torch, traducao, prepararCodigo, redePecas, redeCaminho, treinoCodigo };

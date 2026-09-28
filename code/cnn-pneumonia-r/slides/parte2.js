@@ -19,7 +19,7 @@ function relu(pres) {
     ["Motivo 2, fazer cada camada valer a pena: ", "sem a ReLU, cada camada só multiplica e soma, e várias contas de multiplicar e somar seguidas se resumem a uma só (dobrar e depois triplicar é o mesmo que multiplicar por 6). Dez camadas fariam o mesmo que uma. O corte no zero entre elas impede esse resumo, e cada camada consegue aprender algo novo."],
     ["Onde ela fica: ", "logo depois de cada convolução, antes do pooling (convolução → ReLU → pooling). Também aparece depois da camada densa, que vem mais adiante."],
   ], { x: 7.4, y: 1.4, w: 5.33, h: 5.8, fontSize: 15, paraSpaceAfter: 10 });
-  s.addNotes("[7:45–8:45] Mostre o antes e depois: o azul some, fica só o laranja. Dois motivos. Primeiro, ela limpa o mapa: fica só onde o filtro achou o padrão. Segundo: sem ela, empilhar camadas não adiantaria, porque multiplicar e somar várias vezes seguidas dá o mesmo que multiplicar e somar uma vez só — use o exemplo de dobrar e triplicar, que dá multiplicar por 6. O corte no zero quebra isso. Por fim, mostre onde ela fica: sempre logo depois da convolução.");
+  s.addNotes("[7:15–8:25] Mostre o antes e depois: o azul some, fica só o laranja. Dois motivos. Primeiro, ela limpa o mapa: fica só onde o filtro achou o padrão. Segundo: sem ela, empilhar camadas não adiantaria, porque multiplicar e somar várias vezes seguidas dá o mesmo que multiplicar e somar uma vez só — use o exemplo de dobrar e triplicar, que dá multiplicar por 6. O corte no zero quebra isso. Por fim, mostre onde ela fica: sempre logo depois da convolução.");
 }
 
 function pooling(pres) {
@@ -40,7 +40,7 @@ function pooling(pres) {
     ["Por quê: ", "1) com o mapa 4 vezes menor, as camadas seguintes têm menos contas a fazer. 2) importa saber se o padrão apareceu naquela região, não em qual pixel exato: se uma borda está num pixel ou no vizinho, dentro do mesmo bloco, o maior valor do bloco é o mesmo."],
     ["E depois? ", "O mapa reduzido é uma imagem menor. Ele vira a entrada da próxima convolução, que procura padrões nesses mapas."],
   ], { x: 7.4, y: 1.5, w: 5.33, h: 5.6, fontSize: 16, paraSpaceAfter: 12 });
-  s.addNotes("[8:45–9:45] Pooling: de cada bloco de 2 por 2, fica o maior valor. O mapa encolhe pela metade em cada direção, mas o sinal forte continua lá — compare o mapa real de 28 por 28 com o de 14 por 14. E responda a dúvida natural: sim, o que sai daqui é uma imagem menor, que entra na próxima convolução.");
+  s.addNotes("[8:25–9:20] Pooling: de cada bloco de 2 por 2, fica o maior valor. O mapa encolhe pela metade em cada direção, mas o sinal forte continua lá — compare o mapa real de 28 por 28 com o de 14 por 14. E responda a dúvida natural: sim, o que sai daqui é uma imagem menor, que entra na próxima convolução.");
 }
 
 function jornada(pres) {
@@ -61,7 +61,7 @@ function jornada(pres) {
     ["Por que 32 filtros na 2ª convolução e só 16 na 1ª? ", "a 1ª procura padrões simples (bordas, contrastes), e há poucos tipos deles. Os filtros da 2ª olham os 16 mapas da 1ª ao mesmo tempo e combinam esses padrões simples em padrões mais complexos (formas, texturas). Há muito mais combinações possíveis, então vale ter mais filtros. E como o pooling encolheu os mapas, 32 mapas de 14 × 14 (6.272 números) ainda ocupam metade do espaço de 16 mapas de 28 × 28 (12.544). Os valores exatos, 16 e 32, são escolhas de quem monta a rede."],
     ["1.568 = 32 × 7 × 7: ", "todos os números dos 32 mapas, postos em fila."],
   ], { x: L.margem, y: 3.85, w: L.util, h: 3.4, fontSize: 15, paraSpaceAfter: 8 });
-  s.addNotes("[9:45–10:45] Junte as peças e siga um raio-X. Entra 1 imagem de 28 por 28. A primeira convolução gera 16 mapas; o pooling os reduz para 14 por 14. A segunda convolução gera 32 mapas, reduzidos para 7 por 7. Aí começa a parte 2: achatar, camada densa e saída. Explique cada número: 14 e 7 vêm do pooling; 1.568 é 32 vezes 7 vezes 7. E por que a 2ª convolução tem mais filtros: ela combina os padrões simples da 1ª em padrões mais complexos, e há muito mais combinações do que padrões simples.");
+  s.addNotes("[9:20–10:20] Junte as peças e siga um raio-X. Entra 1 imagem de 28 por 28. A primeira convolução gera 16 mapas; o pooling os reduz para 14 por 14. A segunda convolução gera 32 mapas, reduzidos para 7 por 7. Aí começa a parte 2: achatar, camada densa e saída. Explique cada número: 14 e 7 vêm do pooling; 1.568 é 32 vezes 7 vezes 7. E por que a 2ª convolução tem mais filtros: ela combina os padrões simples da 1ª em padrões mais complexos, e há muito mais combinações do que padrões simples.");
 }
 
 function achatarDensa(pres) {
@@ -84,7 +84,7 @@ function achatarDensa(pres) {
   ys.forEach((y1) => [2.85, 3.55].forEach((y2) => s.addShape(pres.shapes.LINE, Object.assign(
     { x: 7.75, y: Math.min(y1, y2) + 0.22, w: 2.55, h: Math.abs(y2 - y1), line: { color: COR.grade, width: 1 } }, y2 < y1 ? { flipV: true } : {}))));
   texto(s, "cada neurônio recebe todas as entradas", { x: 7.1, y: 4.45, w: 5.4, h: 0.4, fontSize: 13, color: COR.tintaFraca, align: "right" });
-  s.addNotes("[10:45–11:45] Achatar: a camada densa trabalha com uma lista, então os 32 mapas são postos em fila — 1.568 números, como uma linha de uma tabela. Camada densa: são 64 neurônios, cada um uma soma ponderada de todos os 1.568 números. É aqui que os padrões encontrados na parte 1 são combinados para chegar à decisão.");
+  s.addNotes("[10:20–11:15] Achatar: a camada densa trabalha com uma lista, então os 32 mapas são postos em fila — 1.568 números, como uma linha de uma tabela. Camada densa: são 64 neurônios, cada um uma soma ponderada de todos os 1.568 números. É aqui que os padrões encontrados na parte 1 são combinados para chegar à decisão.");
 }
 
 function saida(pres) {
@@ -104,7 +104,7 @@ function saida(pres) {
     ["Softmax: ", "transforma as pontuações em probabilidades que somam 100%.  p(pneumonia) = e^3,1 / (e^1,2 + e^3,1) = 0,87."],
     ["Decisão: ", "a classe de maior probabilidade — o mesmo que cortar em 50%."],
   ], { x: L.margem, y: 4.1, w: L.util, h: 3.0, fontSize: 17, paraSpaceAfter: 10 });
-  s.addNotes("[11:45–12:45] A rede termina com dois números, as pontuações — uma para normal, outra para pneumonia. Sozinhas elas não são probabilidades. O softmax as converte: eleva e a cada pontuação e divide pelo total; aqui dá 13% e 87%. A resposta final é a classe mais provável.");
+  s.addNotes("[11:15–12:10] A rede termina com dois números, as pontuações — uma para normal, outra para pneumonia. Sozinhas elas não são probabilidades. O softmax as converte: eleva e a cada pontuação e divide pelo total; aqui dá 13% e 87%. A resposta final é a classe mais provável.");
 }
 
 function entropia(pres) {
@@ -122,7 +122,7 @@ function entropia(pres) {
     ["Como funciona: ", "quanto menor a probabilidade dada à classe certa, maior a perda. Errar com alta probabilidade custa muito mais do que errar por pouco."],
     ["No lote: ", "a perda é a média das perdas de cada imagem."],
   ], { x: L.margem, y: 4.8, w: L.util, h: 2.4, fontSize: 16, paraSpaceAfter: 6 });
-  s.addNotes("[12:45–13:45] Para aprender, a rede precisa medir o erro. Na classificação, a medida é a entropia cruzada: o menos logaritmo da probabilidade que a rede deu à classe correta. Leia a tabela: 90% na classe certa, perda baixa; 10%, perda alta.");
+  s.addNotes("[13:10–14:05] Para aprender, a rede precisa medir o erro. Na classificação, a medida é a entropia cruzada: o menos logaritmo da probabilidade que a rede deu à classe correta. Leia a tabela: 90% na classe certa, perda baixa; 10%, perda alta.");
 }
 
 function descida(pres) {
@@ -135,7 +135,7 @@ function descida(pres) {
   cartao(pres, s, L.margem, 5.7, L.util, 1.35);
   paragrafos(s, [["Lote: ", "128 imagens por vez.   "], ["Época: ", "uma passada por todas as 4.708 imagens de treino = 37 lotes. Com 10 épocas, os pesos são ajustados 370 vezes, sempre repetindo 1 → 2 → 3 → 4."]],
     { x: L.margem + 0.3, y: 5.85, w: L.util - 0.6, h: 1.1, fontSize: 15, paraSpaceAfter: 2 });
-  s.addNotes("[13:45–15:00] Imagine a curva do erro em função de um peso. O peso começa sorteado, em algum ponto da curva. A backpropagation calcula a inclinação ali — se a curva desce para a direita, o peso deve aumentar. O Adam dá um passo nessa direção. Repetindo, o peso chega perto do menor erro. A rede faz isso ao mesmo tempo para seus 105 mil pesos, inclusive os números dos filtros. É assim que os filtros são aprendidos.");
+  s.addNotes("[14:05–15:15] Imagine a curva do erro em função de um peso. O peso começa sorteado, em algum ponto da curva. A backpropagation calcula a inclinação ali — se a curva desce para a direita, o peso deve aumentar. O Adam dá um passo nessa direção. Repetindo, o peso chega perto do menor erro. A rede faz isso ao mesmo tempo para seus 105 mil pesos, inclusive os números dos filtros. É assim que os filtros são aprendidos.");
 }
 
 function divisao(pres) {
@@ -147,7 +147,7 @@ function divisao(pres) {
     ["Overfitting: ", "a rede decora as imagens de treino em vez de aprender o padrão — vai bem nelas e mal nas novas. Por isso a nota que vale é a do teste."],
     ["Dropout: ", "durante o treino, a cada lote, 30% dos neurônios da camada densa são desligados ao acaso. A rede não pode depender de poucos neurônios e generaliza melhor. Na hora de avaliar, todos voltam a funcionar."],
   ], { x: L.margem + 0.3, y: 4.45, w: L.util - 0.6, h: 2.3, fontSize: 17, paraSpaceAfter: 12 });
-  s.addNotes("[15:00–15:45] Analogia: treino são os exercícios resolvidos, validação é o simulado, teste é a prova. Medir a nota no treino seria dar ao aluno a prova que ele usou para estudar. O dropout é uma defesa contra decorar.");
+  s.addNotes("[15:15–15:55] Analogia: treino são os exercícios resolvidos, validação é o simulado, teste é a prova. Medir a nota no treino seria dar ao aluno a prova que ele usou para estudar. O dropout é uma defesa contra decorar.");
 }
 
 module.exports = { relu, pooling, jornada, achatarDensa, saida, entropia, descida, divisao };

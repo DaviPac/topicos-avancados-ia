@@ -41,7 +41,7 @@ function problema(pres) {
     ["Classificação: ", "o modelo coloca cada raio-X em uma de duas classes: normal ou pneumonia."],
     ["Aprendizado supervisionado: ", "o modelo aprende a partir de milhares de raios-X que já têm o diagnóstico dado por médicos."],
   ], { x: L.margem, y: 5.2, w: L.util, h: 1.9, fontSize: 17 });
-  s.addNotes("[1:00–2:00] Defina a tarefa: entra uma imagem, sai a probabilidade de pneumonia. É um problema de classificação: duas classes possíveis. O modelo aprende com exemplos já diagnosticados.");
+  s.addNotes("[1:00–1:50] Defina a tarefa: entra uma imagem, sai a probabilidade de pneumonia. É um problema de classificação: duas classes possíveis. O modelo aprende com exemplos já diagnosticados.");
 }
 
 function neuronio(pres) {
@@ -67,7 +67,7 @@ function neuronio(pres) {
     ["Rede neural: ", "muitos neurônios organizados em camadas. A saída de uma camada é a entrada da próxima."],
     ["Camada densa: ", "camada em que cada neurônio recebe todas as saídas da camada anterior."],
   ], { x: 7.0, y: 1.6, w: 5.73, h: 5.2, fontSize: 17, paraSpaceAfter: 14 });
-  s.addNotes("[2:00–3:30] Antes da CNN, a peça básica. Um neurônio é uma soma ponderada: pega as entradas, multiplica cada uma por um peso, soma, e soma mais um número fixo. Faça a conta do exemplo. A rede neural junta muitos desses em camadas. Os pesos começam sorteados e são ajustados no treino, a partir dos exemplos. Camada densa é o nome da camada em que cada neurônio olha todas as entradas.");
+  s.addNotes("[1:50–3:10] Antes da CNN, a peça básica. Um neurônio é uma soma ponderada: pega as entradas, multiplica cada uma por um peso, soma, e soma mais um número fixo. Faça a conta do exemplo. A rede neural junta muitos desses em camadas. Os pesos começam sorteados e são ajustados no treino, a partir dos exemplos. Camada densa é o nome da camada em que cada neurônio olha todas as entradas.");
 }
 
 function oQueECNN(pres) {
@@ -90,7 +90,7 @@ function oQueECNN(pres) {
     if (i === 0) seta(pres, s, 6.53, 4.15, 0.27);
   });
   texto(s, "Nos próximos slides, cada peça, uma de cada vez.", { x: L.margem, y: 6.55, w: L.util, h: 0.5, fontFace: FONTE.titulo, fontSize: 18, italic: true });
-  s.addNotes("[3:30–4:45] Dê a visão geral antes dos detalhes. Uma CNN é uma rede neural especializada em imagens. Ela tem duas partes: a primeira procura padrões na imagem, com três peças — convolução, ReLU e pooling — repetidas; a segunda pega os padrões encontrados e decide. Por que não uma rede comum? Ela veria os pixels como colunas soltas, sem saber quem é vizinho de quem, e teria de aprender de novo o mesmo padrão em cada posição da imagem.");
+  s.addNotes("[3:10–4:20] Dê a visão geral antes dos detalhes. Uma CNN é uma rede neural especializada em imagens. Ela tem duas partes: a primeira procura padrões na imagem, com três peças — convolução, ReLU e pooling — repetidas; a segunda pega os padrões encontrados e decide. Por que não uma rede comum? Ela veria os pixels como colunas soltas, sem saber quem é vizinho de quem, e teria de aprender de novo o mesmo padrão em cada posição da imagem.");
 }
 
 function imagemNumeros(pres) {
@@ -102,7 +102,7 @@ function imagemNumeros(pres) {
   grade(pres, s, 6.3, 1.5, pixels, 0.62, cinza);
   paragrafos(s, ["Um recorte de 6 × 6 pixels deste raio-X, como o R o lê.", "Cada número é o tom de cinza de um pixel: 0 é preto, 255 é branco.",
     ["Cada imagem: 28 × 28 = 784 números.", ""]], { x: 10.3, y: 1.6, w: 2.43, h: 4.5, fontSize: 16 });
-  s.addNotes("[4:45–5:30] O computador não vê um pulmão, vê uma matriz de números. Estes são pixels reais deste raio-X, lidos pelo script em R. A CNN vai procurar padrões nessa matriz.");
+  s.addNotes("[4:20–5:00] O computador não vê um pulmão, vê uma matriz de números. Estes são pixels reais deste raio-X, lidos pelo script em R. A CNN vai procurar padrões nessa matriz.");
 }
 
 function convolucao(pres) {
@@ -122,7 +122,7 @@ function convolucao(pres) {
     ["Filtro: ", "uma pequena tabela de pesos, 3 × 3. Ele é colocado sobre um pedaço da imagem; multiplica casa por casa e soma: 3 × (−10 + 0 + 200) = 570. Numa região lisa, o resultado seria perto de zero."],
     ["Deslizar: ", "o filtro anda uma casa para o lado e repete a conta, até cobrir a imagem inteira. Cada conta vira um pixel de uma nova imagem, o mapa, que mostra onde o padrão aparece."],
   ], { x: L.margem, y: 5.0, w: L.util, h: 2.0, fontSize: 17 });
-  s.addNotes("[5:30–6:45] O coração da CNN. Explique a conta devagar: casa por casa, multiplica e soma. Com este filtro, a coluna da esquerda entra com sinal negativo e a da direita com positivo: se a direita é mais clara, o resultado é alto. Numa região lisa, os dois lados se cancelam. Depois o filtro desliza e repete a conta por toda a imagem; o resultado é uma nova imagem, chamada mapa.");
+  s.addNotes("[5:00–6:15] O coração da CNN. Explique a conta devagar: casa por casa, multiplica e soma. Com este filtro, a coluna da esquerda entra com sinal negativo e a da direita com positivo: se a direita é mais clara, o resultado é alto. Numa região lisa, os dois lados se cancelam. Depois o filtro desliza e repete a conta por toda a imagem; o resultado é uma nova imagem, chamada mapa.");
 }
 
 function filtrosAprendidos(pres) {
@@ -140,7 +140,7 @@ function filtrosAprendidos(pres) {
     ["Um filtro é só um conjunto de 9 pesos, ", "iguais aos pesos do neurônio do começo da aula — por isso é aprendido do mesmo jeito."],
     "A rede deste vídeo aprende 16 filtros na 1ª convolução e 32 na 2ª. O filtro de borda ao lado foi escolhido à mão só para ilustrar.",
   ], { x: 7.8, y: 1.5, w: 4.93, h: 5.5, fontSize: 16, paraSpaceAfter: 12 });
-  s.addNotes("[6:45–7:45] Ponto central: os filtros não são programados. Começam com números aleatórios e o treino os ajusta — como, eu mostro daqui a pouco. Aqui, à esquerda, o resultado real de passar um filtro de borda vertical, escolhido à mão, por este raio-X: o mapa acende nas bordas das costelas e dos pulmões. Na rede, são 16 filtros diferentes, cada um gerando o seu mapa.");
+  s.addNotes("[6:15–7:15] Ponto central: os filtros não são programados. Começam com números aleatórios e o treino os ajusta — como, eu mostro daqui a pouco. Aqui, à esquerda, o resultado real de passar um filtro de borda vertical, escolhido à mão, por este raio-X: o mapa acende nas bordas das costelas e dos pulmões. Na rede, são 16 filtros diferentes, cada um gerando o seu mapa.");
 }
 
 module.exports = { capa, roteiro, problema, neuronio, oQueECNN, imagemNumeros, convolucao, filtrosAprendidos };
