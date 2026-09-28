@@ -15,11 +15,9 @@ function relu(pres) {
   texto(s, "ReLU(x) = max(0, x)", { x: L.margem, y: 5.9, w: 6.4, h: 0.5, fontFace: FONTE.titulo, fontSize: 20, bold: true, align: "center" });
   paragrafos(s, [
     ["O que faz: ", "todo número negativo do mapa vira 0; os positivos continuam iguais (veja os números embaixo)."],
-    ["Motivo 1, limpar o mapa: ", "no mapa, número positivo alto quer dizer “o padrão do filtro está aqui”; número negativo quer dizer “aqui há o contrário do padrão”. A próxima camada só precisa saber onde o padrão está. A ReLU apaga o resto: o azul some e fica só o laranja."],
-    ["Motivo 2, fazer cada camada valer a pena: ", "sem a ReLU, cada camada só multiplica e soma, e várias contas de multiplicar e somar seguidas se resumem a uma só (dobrar e depois triplicar é o mesmo que multiplicar por 6). Dez camadas fariam o mesmo que uma. O corte no zero entre elas impede esse resumo, e cada camada consegue aprender algo novo."],
     ["Onde ela fica: ", "logo depois de cada convolução, antes do pooling (convolução → ReLU → pooling). Também aparece depois da camada densa, que vem mais adiante."],
-  ], { x: 7.4, y: 1.4, w: 5.33, h: 5.8, fontSize: 15, paraSpaceAfter: 10 });
-  s.addNotes("[7:15–8:25] Mostre o antes e depois: o azul some, fica só o laranja. Dois motivos. Primeiro, ela limpa o mapa: fica só onde o filtro achou o padrão. Segundo: sem ela, empilhar camadas não adiantaria, porque multiplicar e somar várias vezes seguidas dá o mesmo que multiplicar e somar uma vez só — use o exemplo de dobrar e triplicar, que dá multiplicar por 6. O corte no zero quebra isso. Por fim, mostre onde ela fica: sempre logo depois da convolução.");
+  ], { x: 7.4, y: 1.5, w: 5.33, h: 5.6, fontSize: 18, paraSpaceAfter: 18 });
+  s.addNotes("[7:15–8:25] Mostre o antes e depois: todo valor negativo (o azul) vira zero e sobra só o laranja. Leia a linha de números: −3 vira 0, os positivos continuam iguais. Por fim, mostre onde ela fica: sempre logo depois da convolução, antes do pooling.");
 }
 
 function pooling(pres) {
