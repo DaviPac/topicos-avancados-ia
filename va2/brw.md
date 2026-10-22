@@ -73,51 +73,57 @@ cada célula: **nome** · frase de até 20 palavras (quem usa, o que faz).
 | **impacto alto** | (Minha ideia) Vero | Diário de Crenças · Morador Verifica |
 | **impacto baixo** | Anúncio Seco · Testemunha Protegida · Selo Forjado · Arquivo do Apagado | Genealogia do Boato |
 
-onde discordei da IA, e por quê: [preencha]
+onde discordei da IA, e por quê: Vero teria viabilidade baixa por conflito com LGPD na coleta de dados e viabilidade da leitura de tela. Mas a coleta de dados seriam dados anonimos, mapeando por exemplo gênero e categorias assistidas, sem coletar dados pessoais. E a leitura de tela é viável, o Android fornece APIs nativas para isso.
 
-**minha ideia escolhida:** [preencha: nome · frase]
+**minha ideia escolhida:** Vero
 
-**por que ela, sem IA, em até 3 linhas:** [preencha]
+**por que ela, sem IA, em até 3 linhas:** Ajudaria pessoas a saber a veracidade das informações sem ter que se preocupar com pesquisar, além de fornecer uma estatística sobre as fake news encontradas. Poderia englobar também conteúdo de ódio e chat para debater o conteúdo.
 
 ## 4 · motores
 
 | motor | nome | frase | o que mudou em relação à ideia |
 |:--|:--|:--|:--|
-| inverter | [preencha] | | |
-| canalizar | | | |
-| transplantar | | | |
-| reescalar | | | |
-| trocar a persona | | | |
-| trocar o contexto | | | |
-| trocar a tecnologia | | | |
-| juntar | | | |
-| restringir | | | |
+| motor | o que foi [verbo], em 1 linha | nome | frase | o que mudou em relação à ideia | o que quem usa ganha para si | se sustenta nas duas perguntas? |
+|:--|:--|:--|:--|:--|:--|:--|
+| inverter | o fluxo do aviso: antes o Vero interrompia sem ser chamado; agora só responde quando o usuário pergunta. | **Vero sob demanda** | o usuário toca num post que lhe deu dúvida; o Vero lê a tela e diz de onde veio, desde quando circula e o que falta. | some o aviso não pedido e some o veredito. Parece o bot de checagem no WhatsApp; a sutileza é que lê o post onde ele está e responde origem e lacuna, não "falso". | tira a dúvida sem copiar, colar nem sair do app. | **não**: quem pergunta já duvida, e quem acredita nunca toca; a falha original continua. Uma busca com a palavra "checagem" resolve o caso de quem já duvida. |
+| canalizar | a vontade de ganhar a discussão no grupo da família, que as pessoas já têm. | **Tréplica** | ao ver no grupo um post de que discorda, o usuário pede ao Vero uma resposta curta com fonte, pronta para colar na conversa. | o rótulo cai no post do outro, não no de quem usa. A correção circula pelas mãos de quem quer vencer. Cada lado usa contra o outro, e por isso os dados cobrem os dois lados. | ganha a discussão com fonte na mão, em segundos. | sim: o ganho vem na hora e o custo é um toque. O link da checadora só existe para boato já checado e não chega pronto para a conversa. |
+| transplantar | o rótulo frontal da embalagem (a lupa "alto em açúcar"), que mostra a composição sem proibir. | **Lupa do post** | ao lado do post, um rótulo fixo de fatos: "sem fonte", "vídeo de 2019", "mesmo texto em 300 grupos". | troca o verdadeiro ou falso por fatos que não dizem que a crença está errada. Parece o "encaminhado com frequência" do WhatsApp; a sutileza é dar a data de origem e a fonte, não só dizer que circula. | sabe em segundos o que tem dentro do post, como na embalagem. | **não**: resolve a rejeição, mas não o custo. O usuário ainda entrega a tela inteira em troca de uma curiosidade, e a busca reversa já dá a data de uma imagem. |
+| reescalar | 100× menor: da tela inteira, o tempo todo, para um único momento, o de encaminhar. | **Antes de repassar** | quando o usuário compartilha um post com o Vero antes de mandar a um grupo, ele mostra em uma linha o que falta, e o usuário decide. | lê só o que o usuário escolheu repassar, e o custo de privacidade quase some. Parece o "leia antes de retuitar"; a sutileza é dizer o que falta naquele post, não dar um lembrete genérico. | não passa vergonha quando alguém desmentir no grupo. | sim: o aviso é privado e chega antes da exposição. O "encaminhado com frequência" avisa que circula muito, não o que falta. |
+| trocar a persona | saiu o leitor que acredita, entrou o administrador do grupo do condomínio ou da escola. | **Vero do admin** | o administrador recebe no privado os posts do grupo que já circulam como boato, com a fonte, e decide se comenta. | quem recebe o aviso não é quem acredita, e sim quem responde pelo grupo quando a briga começa. | o grupo não vira briga nem caso de polícia sob a responsabilidade dele. | sim: ele ganha paz no grupo com um aviso que não contesta a crença dele. Hoje confere tudo à mão, ou não confere. |
+| trocar o contexto | do feed do dia a dia para um desastre, como uma enchente, quando o boato custa caro na hora. | **Vero na enchente** | durante o desastre, o Vero cruza o que chega sobre abrigos, estradas e doações com os avisos da Defesa Civil e mostra o que está confirmado. | no desastre a crença é prática, não identidade, e a rejeição ao rótulo cai. | não vai a abrigo lotado nem doa para um Pix falso. | sim: o ganho é imediato. O alerta da Defesa Civil por SMS dá a informação oficial, mas não responde ao boato que chegou no grupo. |
+| trocar a tecnologia | de SLM e visão para uma rede neural de grafos, fora da matriz. | **Vero de rede** | sobre os dados doados, uma rede neural de grafos acha grupos que disparam o mesmo conteúdo em sincronia e avisa quando o post veio de disparo coordenado. | o aviso não julga o conteúdo, diz que há uma campanha por trás. É mais difícil de rejeitar, porque ninguém gosta de ser alvo. | sabe se está sendo alvo de uma campanha. | **não**: só funciona com milhares de doadores, e cada um entrega a tela antes de o aviso existir; o custo vem antes do ganho. |
+| juntar | Vero + Mercado da Mentira. | **Vero quem lucra** | quando aparece um post de cura ou de oportunidade milagrosa, o Vero mostra quem vende produto ligado a ele e onde. | troca "isto é falso" por "alguém ganha dinheiro com você acreditar". Ataca o vendedor, não a crença. | não paga por uma cura ou um curso que não funciona. | sim: o ganho é dinheiro no bolso. O Reclame Aqui mostra queixas contra o vendedor, mas não o liga ao boato que o usuário acabou de ler. |
+| restringir | "e se o custo de nuvem fosse R$ 0?": tudo roda no aparelho, e nada sai sem o usuário ver. | **Vero no bolso** | o julgamento roda no celular; só sai uma contagem semanal por tema, que o usuário lê e aprova antes de enviar. | o custo de privacidade cai, e o usuário confere o que vai para os dados públicos. Isso também resolve o problema das mensagens de terceiros. | tem o retrato do próprio feed sem entregar a tela a ninguém. | **não**: ataca o custo, mas o retrato ainda rotula as crenças dele, e a rejeição continua. |
 
 ## 5 · o que fica e o que sai
 
-**o que eu gostei:** [preencha]
+**o que eu gostei:** Responder apenas quando chamado, sem interromper o uso
 
-**o que achei interessante:** [preencha]
+**o que achei interessante:** "e se o custo de nuvem fosse R$ 0?": tudo roda no aparelho, e nada sai sem o usuário ver.
 
-**o que eu descarto, e por quê:** [preencha]
+**o que eu descarto, e por quê:** 	"100× menor: da tela inteira, o tempo todo, para um único momento, o de encaminhar." Deixa o app fraco, ninguém usaria um app apenas para isso.
 
-**minha ideia completa:** [preencha: nome, e de 3 a 5 linhas: quem usa, o que faz, que IA entra, o que muda na crise]
+**minha ideia completa:**  Vero: App que lê a tela do usuário, identificando informações falsas, enviesadas ou incompletas e mostra na tela aviso com informações completas, além de coletar dados sobre fake news (o que aparece, para quem aparece, o quanto aparece...). O aviso apareceria como um botão de lupa, que apenas ao clicar seria mostrado aviso.
 
 ## 6 · refinamento
 
-**a · e se todo mundo usasse?** [preencha: o efeito concreto na crise e o incentivo individualista, em até 80 palavras]
+**a · e se todo mundo usasse?** Resumo (até 120 palavras):
 
-**b · a IA que não pode faltar.** técnica: [preencha] · aula da disciplina: [preencha: título da aula]
+83% dos brasileiros já viram notícia falsa nas redes, 58% deles perderam a confiança nelas, e golpes custam quase R$ 29 bilhões por ano a 24 milhões de vítimas. Minha aposta para 5 anos de Vero: a desconfiança cai de 58% para 20%, quem acha que o falso tem mais alcance cai de 82% para 20%, e o prejuízo com golpes cai para R$ 20 bilhões. Cada pessoa usa para não repassar boato nem decidir errado; custa bateria e processamento. Pontos fracos: duas apostas medem percepção, não circulação; nenhuma diz quantos clicam na lupa; gênero e categoria de conteúdo são dados pessoais pela LGPD; "repensar" não se mede; e falta o ganho de quem usa os dados públicos.
 
-por que sem ela não roda: [preencha]
+Fontes: Anuário Brasileiro de Segurança Pública, via Jovem Pan · FBSP/Datafolha, via Estado de Minas · Febraban, via Poder360 · DataSenado · Agência Senado
+
+**b · a IA que não pode faltar.** Técnica: um modelo de linguagem (transformer) que lê o texto da tela, busca nas checagens publicadas e compara o post com elas. Sem ele, o Vero não reconhece o mesmo boato reescrito com outras palavras, nem diz o que falta num post que nenhuma regra previu. Uma solução sem IA usaria uma lista de sites classificados e a busca por palavras-chave nas checagens: pegaria só o boato copiado letra por letra e de fonte conhecida, e não montaria a informação completa. Contagens ficam com regras. Se no teste a busca por palavras achar tanto quanto o modelo, retiro a IA. · aula da disciplina: [preencha: título da aula]
+
+por que sem ela não roda: Não teria eficácia em julgar conteúdo
 
 **c · o cético e as saídas**
 
 | crítica | saída 1 | saída 2 | minha decisão |
 |:--|:--|:--|:--|
-| [preencha] | | | |
-| | | | |
-| | | | |
+| viabilidade · o app não consegue ver o post. No iPhone, um app não lê a tela de outro. no Android, isso só é possível pelo serviço de acessibilidade, que a Play Store restringe porque é o mesmo caminho usado nos golpes de banco. | mudar de plataforma: virar extensão de navegador no computador | apoiar-se num ator que já existe: em vez de ler a tela, virar um contato no WhatsApp para onde a pessoa encaminha o post, como o robô Fátima, do Aos Fatos, já faz. O acréscimo seria a comparação trecho a trecho com a checagem. Perde-se a lupa que aparece sozinha: a pessoa precisa lembrar de encaminhar. | Deixar apenas para android. |
+| adoção · quem repassa boato não instala um app para desconfiar do que já acredita. | trocar a persona: quem usa passa a ser o filho ou neto que recebe o boato no grupo da família e quer responder sem brigar. Ele cola o post, e o app devolve uma resposta curta com o trecho que não bate e o link da checagem. | atacar um público menor e diminuir o escopo: só golpes (Pix, falso sorteio, falso emprego, falso parente), oferecidos por um banco ou cooperativa aos clientes mais visados. | Manter como está. A ideia atualmente atinge também quem não quer cair em fake news, e ao mesmo tempo não quer ter o trabalho de pesquisar |
+| dano possível · a lupa vira selo, e a falta dela também. o modelo compara um post novo com a checagem “mais parecida” e erra nos dois sentidos. Marca como falso um post verdadeiro que só lembra um boato antigo, e não acha nada no boato recém-reescrito, que ainda não foi checado. | começar por uma fase pequena, apoiada num ator que já existe: uma só categoria (por exemplo, saúde ou eleição), com uma agência de checagem ou coalizão como o Comprova revisando cada lupa antes de ir ao ar. | diminuir o escopo: a lupa só aparece quando o post repete uma afirmação já checada, com o mesmo número, nome ou data. | Ter selos para confirmado, incoerente e não tem certeza |
 
 ## 7 · resumo, sem IA
 
