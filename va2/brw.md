@@ -127,5 +127,6 @@ por que sem ela não roda: Não teria eficácia em julgar conteúdo
 
 ## 7 · resumo, sem IA
 
+A crise é fake news e meias verdades, a ideia é um aplicativo que monitora a tela do dispositivo e, ao notar algum conteúdo que possa ser enviesado ou falso, mostra indicador visual com opção de ver informações completas, usaria OCR para identificar texto e modelos de linguagem para entender e fazer a busca. Teria também opção de dialogar com IA sobre esse conteúdo, e pode também coletar dados para mapear que tipo de conteúdo aparece e para quem, possibilitando analise estatística de fake news. Se todo mundo utilizasse, conteúdos falsos seriam mais denunciados e teriam menos engajamento, e cada pessoa usaria para ter a confiança no conteúdo que está vendo sem ter o trabalho de pesquisar.
 [preencha: em até 5 linhas, a crise, a ideia, como a IA entra, o que muda se todo mundo usasse,
 e por que cada pessoa usaria]
