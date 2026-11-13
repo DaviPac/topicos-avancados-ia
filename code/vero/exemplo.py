@@ -4,6 +4,7 @@
 # alteração mínima do vero: a entrada é o print de um post + as checagens achadas na Lupa e na Boatos.org;
 # a saída é o veredito da lupa.
 # terceiro commit: sem checagem nas agências, o Gemini busca na web (Google Search).
+# quarto commit: o print vai em tons de cinza para o OCR, que assim lê texto colorido sobre fundo colorido.
 import re
 import sys
 
@@ -11,14 +12,14 @@ import pytesseract
 import requests
 from google import genai
 from google.genai import types
-from PIL import Image
+from PIL import Image, ImageOps
 
 AGENCIAS = ['https://agencialupa.org', 'https://www.boatos.org']
 
 client = genai.Client()
 
 for print_do_post in sys.argv[1:]:
-    post = pytesseract.image_to_string(Image.open(print_do_post), lang='por')
+    post = pytesseract.image_to_string(ImageOps.grayscale(Image.open(print_do_post)), lang='por')
     palavras = client.models.generate_content(
         model='gemini-3.8-flash',
         contents=f'Dê 2 ou 3 palavras-chave, em português, separadas por espaço, para buscar checagens deste post:\n{post}'
