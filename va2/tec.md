@@ -185,6 +185,8 @@ link: https://www.hindustantimes.com/world-news/eiffel-tower-to-be-demolished-in
 
 **link:** [youtu.be/G9ysBKz6EoE](https://youtu.be/G9ysBKz6EoE) (YouTube, abre sem login) · **duração:** 2 min · **o que aparece:** o `git log` com os commits (o exemplo oficial, a alteração mínima e os dois extras), o comando e a saída dos três prints.
 
+**o vídeo entregue ao professor:** é outro vídeo, enviado no YouTube como privado, que só o professor vê; segundo o aluno, ele mostra os dois commits rodando e foi aprovado pelo professor.
+
 ## 5 · o que deu certo e o que errou, sem IA
 
 Nos 3 posts, o veredito bateu com a realidade. Em 1, usou lupa como fonte, nos outros 2, busca pela web.  
