@@ -13,7 +13,8 @@ técnica do § 6b do brw: um modelo de linguagem (transformer) que lê o texto d
 
 | peça | central ou apoio | o que faz na ideia | link oficial | licença | por que esta, e não as 2 alternativas |
 |:--|:--|:--|:--|:--|:--|
-| [preencha] | central | [preencha] | [preencha] | [preencha] | [preencha, sem IA] |
+| Gemini, pelo SDK google-genai | central | interpretação de postagens, busca na internet e interpretação do resultado | [googleapis/python-genai](https://github.com/googleapis/python-genai) | SDK: Apache-2.0 · modelo: fechado, [termos da Gemini API](https://ai.google.dev/gemini-api/terms) | LLM local é pesado demais para rodar em celulares, modelos menores alucinam com frequência e modelos maiores demoram dezenas de vezes mais que a api do gemini para gerar uma resposta, além do gasto alto de recursos do dispositivo. Sentence-transformers funcionam para comparar checagens, mas falham na busca pela internet: se não houver uma checagem explícita a notícia não será encontrada. (alternativas: LLM local pelo Ollama, ex. Qwen3-4B; embeddings com sentence-transformers + bge-m3) |
+| Tesseract, pelo pytesseract | apoio | verificar texto em quaisquer elementos que não possam ser identificados pelo sistema de acessibilidade do celular, como elementos textuais em imagens de posts | [tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract) · [madmaze/pytesseract](https://github.com/madmaze/pytesseract) | Apache-2.0 · Apache-2.0 | Tesseract pois roda em CPU e o modelo de português (`por.traineddata`) tem 2 MB; o EasyOCR depende do PyTorch, cujo pacote para Linux tem 539 MB, e o PaddleOCR depende do PaddlePaddle, com 195 MB. Rodei o Tesseract no celular, num Samsung S23 com Android 14, pelo app de medição em [`code/ocr-android`](../code/ocr-android/README.md) (Tesseract4Android 4.9.0, Apache-2.0): leu um print de 1080 x 2340 em 1298 ms. (alternativas: EasyOCR, PaddleOCR) |
 
 ## 2 · o exemplo oficial, rodando
 

@@ -1,0 +1,31 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "br.ufrpe.vero.ocr"
+    compileSdk 35
+    buildToolsVersion "35.0.1"
+
+    defaultConfig {
+        applicationId "br.ufrpe.vero.ocr"
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // o por.traineddata já vem comprimido; não recomprimir dentro do APK
+    androidResources {
+        noCompress "traineddata"
+    }
+}
+
+dependencies {
+    implementation "cz.adaptech.tesseract4android:tesseract4android:4.9.0"
+}
