@@ -87,7 +87,9 @@ as duas fontes do Bolsa Família redirecionam para checagens reais: [Estadão Ve
 
 ## 4 · o vídeo
 
-**link:** [preencha] · **duração:** [preencha] · **o que aparece:** [preencha]
+**link:** [va2/tec-video.mp4 no repositório](https://github.com/DaviPac/topicos-avancados-ia/blob/19eadd6122bd0b81ea2212fc40434bfac9309ea1/va2/tec-video.mp4) (abre sem login; [arquivo direto](https://github.com/DaviPac/topicos-avancados-ia/raw/19eadd6122bd0b81ea2212fc40434bfac9309ea1/va2/tec-video.mp4)) · **duração:** 1 min 34 s · **o que aparece:** gravação da tela da minha máquina, com um terminal: o `git log` com os dois commits (o exemplo oficial, 997c85d, e a alteração mínima, 66fcdcb), o comando `time .venv/bin/python exemplo.py prints-cinza/*.jpg` e a saída dos três prints aparecendo.
+
+o vídeo é uma rodada nova, posterior à do § 3: os três vereditos são os mesmos ("incoerente"), mas as fontes da busca no Bolsa Família mudaram (boatos.org e portelafm.com.br, em vez de estadao.com.br e boatos.org), e o tempo foi de 1m15s. os comandos foram digitados por um script, e o prompt (`davi@vero:`) também é do script; os comandos e a saída são reais.
 
 ## 5 · o que deu certo e o que errou, sem IA
 
