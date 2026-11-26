@@ -93,7 +93,10 @@ o vídeo é uma rodada nova, posterior à do § 3: os três vereditos são os me
 
 ## 5 · o que deu certo e o que errou, sem IA
 
-[preencha: até 4 linhas, sem IA]
+Onde acertou: A técnica conseguiu corretamente decidir se os prints são coerentes ou não, retornando a fonte quando aplicável.  
+Onde errou: O OCR acaba embaralhando algumas palavras a depender do idioma, mas sem evidência de que afete a checagem  
+Quanto tempo e quanta máquina pediu: As checagens duraram em média 25 segundos cada, e o único processamento no dispositivo do usuário é o OCR, que roda em cerca de 1 segundo  
+O que isso muda na ideia: Pode ser interessante ver algum modelo LLM mais rápido para agilizar as checagens.
 
 ## 6 · auditoria cega
 
