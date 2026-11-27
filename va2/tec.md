@@ -128,6 +128,6 @@ encontrei, colada como veio):
 **a minha resposta, sem IA** (uma linha por item: o que mudei por causa da auditoria, e onde; ou
 por que discordo):
 
-1. [preencha]
-2. [preencha]
-3. [preencha]
+1. Foi adicionado nota indicando que o guia está fora do ar. Foi registrado o teste feito no repositório
+2. Nada mudou no item 2, pois pasou na auditoria
+3. Foi adicionado informação da causa do embaralhamento em diferentes idiomas (lang='por'), e nota sobre a conversão de tons de cinza
