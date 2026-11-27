@@ -129,5 +129,5 @@ encontrei, colada como veio):
 por que discordo):
 
 1. Foi adicionado nota indicando que o guia está fora do ar. Foi registrado o teste feito no repositório
-2. Nada mudou no item 2, pois pasou na auditoria
+2. Nada mudou no item 2, pois passou na auditoria
 3. Foi adicionado informação da causa do embaralhamento em diferentes idiomas (lang='por'), e nota sobre a conversão de tons de cinza
